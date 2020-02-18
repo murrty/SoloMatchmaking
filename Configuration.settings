@@ -1,0 +1,45 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SoloMatchmaking" GeneratedClassName="Configuration">
+  <Profiles />
+  <Settings>
+    <Setting Name="DestinyPorts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1935,3097,3478-3480</Value>
+    </Setting>
+    <Setting Name="DestinyNames" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Destiny2SoloMMBlockOutTCP,Destiny2SoloMMBlockOutUDP,Destiny2SoloMMBlockInTCP,Destiny2SoloMMBlockInUDP</Value>
+    </Setting>
+    <Setting Name="RockstarPorts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">6672</Value>
+    </Setting>
+    <Setting Name="RockstarNames" Type="System.String" Scope="User">
+      <Value Profile="(Default)">RockstarSoloMMBlockOutUDP,RockstarSoloMMBlockInUDP</Value>
+    </Setting>
+    <Setting Name="EnableDestinyHotkeys" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="EnableRockstarHotkeys" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="LastPosX" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-99999999</Value>
+    </Setting>
+    <Setting Name="LastPosY" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-99999999</Value>
+    </Setting>
+    <Setting Name="DestinyHotkeyModifier" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Ctrl</Value>
+    </Setting>
+    <Setting Name="DestinyHotkeyKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F9</Value>
+    </Setting>
+    <Setting Name="RockstarHotkeyModifier" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Ctrl</Value>
+    </Setting>
+    <Setting Name="RockstarHotkeyKey" Type="System.String" Scope="User">
+      <Value Profile="(Default)">F10</Value>
+    </Setting>
+    <Setting Name="LanguageFile" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+  </Settings>
+</SettingsFile>
