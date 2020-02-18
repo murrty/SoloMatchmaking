@@ -1,5 +1,5 @@
-﻿SoloMatchmaking
-######
+SoloMatchmaking
+===============
 
 Matchmake in games, alone.
 
