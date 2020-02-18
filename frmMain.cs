@@ -721,18 +721,20 @@ namespace SoloMatchmaking {
             OpeningCMS = true;
             tscbLanguages.Items.Clear();
             tscbLanguages.Items.Add("English (Internal)");
-            List<string> Files = new List<string>();
-            DirectoryInfo LangFolder = new DirectoryInfo(Environment.CurrentDirectory + "\\lang\\");
-            FileInfo[] LangFiles = LangFolder.GetFiles("*.ini");
-            foreach (FileInfo File in LangFiles) {
-                Files.Add(File.Name.Substring(0, File.Name.Length - 4));
-            }
-            tscbLanguages.Items.AddRange(Files.ToArray());
-            if (Configuration.Default.LanguageFile == "") {
-                tscbLanguages.SelectedIndex = tscbLanguages.ComboBox.SelectedIndex = 0;
-            }
-            else {
-                tscbLanguages.SelectedIndex = tscbLanguages.ComboBox.FindStringExact(Configuration.Default.LanguageFile);
+            if (Directory.Exists(Environment.CurrentDirectory + "\\lang\\")) {
+                List<string> Files = new List<string>();
+                DirectoryInfo LangFolder = new DirectoryInfo(Environment.CurrentDirectory + "\\lang\\");
+                FileInfo[] LangFiles = LangFolder.GetFiles("*.ini");
+                foreach (FileInfo File in LangFiles) {
+                    Files.Add(File.Name.Substring(0, File.Name.Length - 4));
+                }
+                tscbLanguages.Items.AddRange(Files.ToArray());
+                if (Configuration.Default.LanguageFile == "") {
+                    tscbLanguages.SelectedIndex = tscbLanguages.ComboBox.SelectedIndex = 0;
+                }
+                else {
+                    tscbLanguages.SelectedIndex = tscbLanguages.ComboBox.FindStringExact(Configuration.Default.LanguageFile);
+                }
             }
             cmsLanguageSelect.Show(MousePosition.X, MousePosition.Y + 20);
             OpeningCMS = false;
