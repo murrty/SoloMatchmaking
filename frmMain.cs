@@ -1,4 +1,4 @@
-using NetFwTypeLib;
+﻿using NetFwTypeLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -223,7 +223,7 @@ namespace SoloMatchmaking {
             else {
                 bufferHotkey = lang.HotkeyDisabled;
             }
-
+            if (!isAdmin) { bufferHotkey = lang.HotkeyUnavailable; }
             lbDestinyHotkey.Text = bufferHotkey;
 
             bufferHotkey = "(";
@@ -243,6 +243,7 @@ namespace SoloMatchmaking {
             else {
                 bufferHotkey = lang.HotkeyDisabled;
             }
+            if (!isAdmin) { bufferHotkey = lang.HotkeyUnavailable; }
             lbRockstarHotkey.Text = bufferHotkey;
             rtbRockstarInfo.Text = lang.rtbRockstarInfo;
         }
@@ -252,6 +253,8 @@ namespace SoloMatchmaking {
             if (pr.IsInRole(WindowsBuiltInRole.Administrator)) {
                 btnToggleDestiny.Enabled = true;
                 btnToggleRockstar.Enabled = true;
+                chkEnableDestinyHotkey.Enabled = true;
+                chkEnableRockstarHotkey.Enabled = true;
                 isAdmin = true;
 
                 enableHotkeys(0);

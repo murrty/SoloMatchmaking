@@ -10,6 +10,7 @@ namespace SoloMatchmaking {
         // Globally used
         public string HotkeyToggle = string.Empty;
         public string HotkeyDisabled = string.Empty;
+        public string HotkeyUnavailable = string.Empty;
 
         // frmMain
         public string frmMainAdmin = string.Empty;
@@ -67,6 +68,7 @@ namespace SoloMatchmaking {
             // Globally used
             HotkeyToggle = "to toggle";
             HotkeyDisabled = "Hotkey disabled";
+            HotkeyUnavailable = "Hotkey unavailable (not admin)";
 
             // frmMain
             frmMainAdmin = "Solo Matchmaking";
@@ -157,6 +159,10 @@ namespace SoloMatchmaking {
                         }
                         else if (ReadLine.StartsWith("HotkeyDisabled")) {
                             HotkeyDisabled = ReadLine.Split('=')[1];
+                            continue;
+                        }
+                        else if (ReadLine.StartsWith("HotkeyUnavailable")) {
+                            HotkeyUnavailable = ReadLine.Split('=')[1];
                             continue;
                         }
 
