@@ -46,7 +46,7 @@ namespace SoloMatchmaking {
         private static volatile string ttMainChangeRockstarHotkeyString = "ttMainChangeRockstarHotkey"; // ID 26
         private static volatile string rtbRockstarInfoString = "rtbRockstarInfo";                       // ID 27
 
-        // frmError
+        // frmException
         private static volatile string frmExceptionString = "frmException";                             // ID 28
         private static volatile string lbExceptionHeaderString = "lbExceptionHeader";                   // ID 29
         private static volatile string lbExceptionDescriptionString = "lbExceptionDescription";         // ID 30
@@ -66,7 +66,7 @@ namespace SoloMatchmaking {
         #endregion
 
         #region GetSetRadio
-//////////////// Language Identifier \\\\\\\\\\\\\\\\
+//////////////// Language identifier \\\\\\\\\\\\\\\\
         public string CurrentLanguageShort {
             get { return CurrentLanguageShortString; }
             private set { CurrentLanguageShortString = value; }
@@ -80,7 +80,7 @@ namespace SoloMatchmaking {
             private set { CurrentLanguageHintString = value; }
         }
 
-//////////////// Language Identifier \\\\\\\\\\\\\\\\
+//////////////// Globally used \\\\\\\\\\\\\\\\
         public string HotkeyToggle {
             get { return HotkeyToggleString; }
             private set { HotkeyToggleString = value; }
@@ -94,7 +94,7 @@ namespace SoloMatchmaking {
             private set { HotkeyUnavailableString = value; }
         }
 
-//////////////// Language Identifier \\\\\\\\\\\\\\\\
+//////////////// frmMain \\\\\\\\\\\\\\\\
         public string frmMainAdmin {
             get { return frmMainAdminString; }
             private set { frmMainAdminString = value; }
@@ -124,7 +124,7 @@ namespace SoloMatchmaking {
             private set { tsmiSelectLanguageString = value; }
         }
 
-//////////////// Language Identifier \\\\\\\\\\\\\\\\
+//////////////// frmMain / tabMain \\\\\\\\\\\\\\\\
         public string tabDestiny {
             get { return tabDestinyString; }
             private set { tabDestinyString = value; }
@@ -138,7 +138,7 @@ namespace SoloMatchmaking {
             private set { tabDebugString = value; }
         }
 
-//////////////// Language Identifier \\\\\\\\\\\\\\\\
+//////////////// // frmMain / tabMain / tabDestiny \\\\\\\\\\\\\\\\
         public string chkEnableDestinyHotkey {
             get { return chkEnableDestinyHotkeyString; }
             private set { chkEnableDestinyHotkeyString = value; }
@@ -156,7 +156,7 @@ namespace SoloMatchmaking {
             private set { ttMainChangeDestinyHotkeyString = value; }
         }
 
-//////////////// Language Identifier \\\\\\\\\\\\\\\\
+//////////////// // frmMain / tabMain / tabRockstar \\\\\\\\\\\\\\\\
         public string chkEnableRockstarHotkey {
             get { return chkEnableRockstarHotkeyString; }
             private set { chkEnableRockstarHotkeyString = value; }
@@ -190,7 +190,7 @@ namespace SoloMatchmaking {
             private set { rtbRockstarInfoString = value; }
         }
 
-//////////////// Language Identifier \\\\\\\\\\\\\\\\
+//////////////// frmException \\\\\\\\\\\\\\\\
         public string frmException {
             get { return frmExceptionString; }
             private set { frmExceptionString = value; }
@@ -216,7 +216,7 @@ namespace SoloMatchmaking {
             private set { btnExceptionOkString = value; }
         }
 
-//////////////// Language Identifier \\\\\\\\\\\\\\\\
+//////////////// frmNewHotkey \\\\\\\\\\\\\\\\
         public string frmNewHotkey {
             get { return frmNewHotkeyString; }
             private set { frmNewHotkeyString = value; }
@@ -250,7 +250,7 @@ namespace SoloMatchmaking {
             private set { btnNewHotkeySaveString = value; }
         }
 
-//////////////// Language Class \\\\\\\\\\\\\\\\
+//////////////// Language class \\\\\\\\\\\\\\\\
         public string LoadedFile {
             get { return LoadedFileString; }
             private set { LoadedFileString = value; }
@@ -315,7 +315,7 @@ namespace SoloMatchmaking {
                                                         "- Return to Free Roam\n" +
                                                         "- Disable rules after a while to invite non whitelisted players";
 
-        // frmError
+        // frmException
         public static readonly string frmException = "An exception occured";
         public static readonly string lbExceptionHeader = "An exception has occured";
         public static readonly string lbExceptionDescription = "Below is the error that occured. Feel free to open a new issue and report it.";
@@ -376,7 +376,7 @@ namespace SoloMatchmaking {
             ttMainChangeRockstarHotkey = InternalEnglish.ttMainChangeRockstarHotkey;
             rtbRockstarInfo = InternalEnglish.rtbRockstarInfo;
 
-            // frmError
+            // frmException
             frmException = InternalEnglish.frmException;
             lbExceptionHeader = InternalEnglish.lbExceptionHeader;
             lbExceptionDescription = InternalEnglish.lbExceptionDescription;
@@ -466,7 +466,7 @@ namespace SoloMatchmaking {
                         }
 
 
-                        else if (ReadLine == "HotkeyToggle") {
+                        else if (ReadControl == "HotkeyToggle") {
                             HotkeyToggle = ReadLine;
                             continue;
                         }
@@ -524,7 +524,7 @@ namespace SoloMatchmaking {
                         }
 
 
-                        else if (ReadControl == "chkEnableDestiny") {
+                        else if (ReadControl == "chkEnableDestinyHotkey") {
                             chkEnableDestinyHotkey = ReadLine;
                             continue;
                         }
@@ -575,7 +575,7 @@ namespace SoloMatchmaking {
                         }
 
 
-                        else if (ReadControl == "frmError") {
+                        else if (ReadControl == "frmException") {
                             frmException = ReadLine;
                             continue;
                         }

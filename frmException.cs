@@ -21,16 +21,17 @@ namespace SoloMatchmaking {
 
         void loadLanguage() {
             if (FromLanguage) {
-                this.Text = "An exception occured";
-                lbExceptionHeader.Text = "An exception has occured";
-                lbExceptionDescription.Text = "Below is the error that occured. Feel free to open a new issue and report it.";
-                rtbExceptionDetails.Text = "Feel free to copy + paste this entire text wall into a new issue on Github";
-                btnExceptionGithub.Text = "Open Github";
-                btnExceptionOk.Text = "OK";
+                this.Text = Language.InternalEnglish.frmException;
+                lbExceptionHeader.Text = Language.InternalEnglish.lbExceptionHeader;
+                lbExceptionDescription.Text = Language.InternalEnglish.lbExceptionDescription;
+                rtbExceptionDetails.Text = Language.InternalEnglish.rtbExceptionDetails;
+                btnExceptionGithub.Text = Language.InternalEnglish.btnExceptionGithub;
+                btnExceptionOk.Text = Language.InternalEnglish.btnExceptionOk;
             }
             else {
                 this.Text = lang.frmException;
                 lbExceptionHeader.Text = lang.lbExceptionHeader;
+                lbExceptionDescription.Text = lang.lbExceptionDescription;
                 lbExceptionDescription.Text = lang.lbExceptionDescription;
                 btnExceptionGithub.Text = lang.btnExceptionGithub;
                 btnExceptionOk.Text = lang.btnExceptionOk;

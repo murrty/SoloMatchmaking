@@ -146,7 +146,6 @@
             // chkEnableRockstarHotkey
             // 
             this.chkEnableRockstarHotkey.Appearance = System.Windows.Forms.Appearance.Button;
-            this.chkEnableRockstarHotkey.AutoSize = true;
             this.chkEnableRockstarHotkey.Checked = true;
             this.chkEnableRockstarHotkey.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkEnableRockstarHotkey.Enabled = false;
@@ -155,6 +154,7 @@
             this.chkEnableRockstarHotkey.Size = new System.Drawing.Size(145, 23);
             this.chkEnableRockstarHotkey.TabIndex = 7;
             this.chkEnableRockstarHotkey.Text = "chkEnableRockstarHotkey";
+            this.chkEnableRockstarHotkey.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkEnableRockstarHotkey.UseVisualStyleBackColor = true;
             this.chkEnableRockstarHotkey.CheckedChanged += new System.EventHandler(this.chkEnableRockstarHotkey_CheckedChanged);
             // 
@@ -303,7 +303,7 @@
             // 
             // lbDestiny
             // 
-            this.lbDestiny.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lbDestiny.Cursor = System.Windows.Forms.Cursors.Default;
             this.lbDestiny.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lbDestiny.Location = new System.Drawing.Point(217, 4);
             this.lbDestiny.Name = "lbDestiny";
