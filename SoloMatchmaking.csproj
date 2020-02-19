@@ -49,11 +49,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Configuration.settings</DependentUpon>
     </Compile>
-    <Compile Include="frmError.cs">
+    <Compile Include="frmException.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmError.Designer.cs">
-      <DependentUpon>frmError.cs</DependentUpon>
+    <Compile Include="frmException.Designer.cs">
+      <DependentUpon>frmException.cs</DependentUpon>
     </Compile>
     <Compile Include="frmNewHotkey.cs">
       <SubType>Form</SubType>
@@ -61,19 +61,19 @@
     <Compile Include="frmNewHotkey.Designer.cs">
       <DependentUpon>frmNewHotkey.cs</DependentUpon>
     </Compile>
-    <Compile Include="KeyLibrary.cs" />
+    <Compile Include="Keyboard.cs" />
     <Compile Include="Language.cs" />
+    <Compile Include="LanguageLegacy.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="KeyboardHook.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmError.resx">
-      <DependentUpon>frmError.cs</DependentUpon>
+    <EmbeddedResource Include="frmException.resx">
+      <DependentUpon>frmException.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>

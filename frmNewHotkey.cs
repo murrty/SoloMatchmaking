@@ -11,7 +11,7 @@ using System.Windows.Forms;
 namespace SoloMatchmaking {
     public partial class frmNewHotkey : Form {
 
-        Language lang = new Language();
+        Language lang = Language.GetLanguageInstance();
         public int GameID = -1;
         public string OldModifier = null;
         public string OldKey = null;
@@ -24,13 +24,6 @@ namespace SoloMatchmaking {
             loadLanguage();
         }
         void loadLanguage() {
-            if (Configuration.Default.LanguageFile == "") {
-                lang.LoadInternalEnglish();
-            }
-            else {
-                lang.LoadLanguage(Configuration.Default.LanguageFile);
-            }
-
             this.Text = lang.frmNewHotkey;
             lbNewHotkeyHeader.Text = lang.lbNewHotkeyHeader;
             lbNewHotkeyDescription.Text = lang.lbNewHotkeyDescription;

@@ -36,7 +36,7 @@ namespace SoloMatchmaking {
 
         KeyboardHook destinyHook;
         KeyboardHook rockstarHook;
-        Language lang = new Language();
+        Language lang = Language.GetLanguageInstance();
 
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
@@ -57,6 +57,15 @@ namespace SoloMatchmaking {
             checkAdmin();
             setLanguage();
             checkRules();
+        }
+        protected override void WndProc(ref Message m) {
+            if (m.Msg == Program.WM_SHOWFORM) {
+                this.Show();
+                if (this.WindowState != FormWindowState.Normal)
+                    this.WindowState = FormWindowState.Normal;
+                this.Activate();
+            }
+            base.WndProc(ref m);
         }
         private void frmMain_Load(object sender, EventArgs e) {
             if (Configuration.Default.LastPosX != -99999999 & Configuration.Default.LastPosY != -99999999) {
@@ -163,17 +172,38 @@ namespace SoloMatchmaking {
             toggleRule(2);
         }
 
-        void setLanguage(bool SkipFile = false) {
+        void LoadLanguage(bool SkipFile = false) {
             if (!SkipFile) {
                 if (Configuration.Default.LanguageFile == string.Empty) {
                     lang.LoadInternalEnglish();
+                    tscbLanguages.ComboBox.SelectedIndex = 0;
                 }
                 else {
                     if (File.Exists(Environment.CurrentDirectory + "\\lang\\" + Configuration.Default.LanguageFile + ".ini")) {
                         lang.LoadLanguage(Configuration.Default.LanguageFile);
+                        tscbLanguages.ComboBox.SelectedIndex = tscbLanguages.ComboBox.FindStringExact(Configuration.Default.LanguageFile);
                     }
                     else {
                         lang.LoadInternalEnglish();
+                        tscbLanguages.ComboBox.SelectedIndex = 0;
+                    }
+                }
+            }
+
+
+        }
+        void setLanguage(bool SkipFile = false) {
+            if (!SkipFile) {
+                if (Configuration.Default.LanguageFile == string.Empty) {
+                    tscbLanguages.ComboBox.SelectedIndex = 0;
+                }
+                else {
+                    if (File.Exists(Environment.CurrentDirectory + "\\lang\\" + Configuration.Default.LanguageFile + ".ini")) {
+                        lang.LoadLanguage(Configuration.Default.LanguageFile);
+                        tscbLanguages.ComboBox.SelectedIndex = tscbLanguages.ComboBox.FindStringExact(Configuration.Default.LanguageFile);
+                    }
+                    else {
+                        tscbLanguages.ComboBox.SelectedIndex = 0;
                     }
                 }
             }
@@ -184,7 +214,7 @@ namespace SoloMatchmaking {
                 this.Text = lang.frmMainAdmin;
             }
             else {
-                this.Text = lang.frmMain;
+                this.Text = lang.frmMainNoAdmin;
                 lbDestiny.ForeColor = Color.FromKnownColor(KnownColor.ControlDark);
                 lbRockstar.ForeColor = Color.FromKnownColor(KnownColor.ControlDark);
             }
@@ -196,7 +226,7 @@ namespace SoloMatchmaking {
                 tabMain.TabPages[2].Text = lang.tabDebug;
             }
             lbCurrentLanguageShort.Text = lang.CurrentLanguageShort;
-            ttMain.SetToolTip(this.lbCurrentLanguageShort, lang.CurrentLanguageLong + " (" + lang.CurrentLanguageShort + ")\nClick here to change Language");
+            ttMain.SetToolTip(this.lbCurrentLanguageShort, lang.CurrentLanguageLong + " (" + lang.CurrentLanguageShort + ")\n" + lang.CurrentLanguageHint);
             tsmiSelectLanguage.Text = lang.tsmiSelectLanguage;
             if (DestinyRulesActive) {
                 lbDestiny.Text = lang.lbDestinyOn;
@@ -246,6 +276,7 @@ namespace SoloMatchmaking {
             if (!isAdmin) { bufferHotkey = lang.HotkeyUnavailable; }
             lbRockstarHotkey.Text = bufferHotkey;
             rtbRockstarInfo.Text = lang.rtbRockstarInfo;
+
         }
         void checkAdmin() {
             WindowsIdentity wID = WindowsIdentity.GetCurrent();
@@ -694,7 +725,7 @@ namespace SoloMatchmaking {
         }
 
         void reportError(Exception exc) {
-            frmError errorReport = new frmError();
+            frmException errorReport = new frmException();
             errorReport.reportedException = exc;
             errorReport.ShowDialog();
         }

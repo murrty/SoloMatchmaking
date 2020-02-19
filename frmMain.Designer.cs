@@ -50,8 +50,8 @@
             this.ttMain = new System.Windows.Forms.ToolTip(this.components);
             this.lbCurrentLanguageShort = new System.Windows.Forms.Label();
             this.cmsLanguageSelect = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tscbLanguages = new System.Windows.Forms.ToolStripComboBox();
             this.tsmiSelectLanguage = new System.Windows.Forms.ToolStripMenuItem();
+            this.tscbLanguages = new System.Windows.Forms.ToolStripComboBox();
             this.tabMain.SuspendLayout();
             this.tabDestiny.SuspendLayout();
             this.tabRockstar.SuspendLayout();
@@ -90,6 +90,7 @@
             this.chkEnableDestinyHotkey.CheckAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkEnableDestinyHotkey.Checked = true;
             this.chkEnableDestinyHotkey.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEnableDestinyHotkey.Enabled = false;
             this.chkEnableDestinyHotkey.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.chkEnableDestinyHotkey.Location = new System.Drawing.Point(135, 51);
             this.chkEnableDestinyHotkey.Name = "chkEnableDestinyHotkey";
@@ -148,6 +149,7 @@
             this.chkEnableRockstarHotkey.AutoSize = true;
             this.chkEnableRockstarHotkey.Checked = true;
             this.chkEnableRockstarHotkey.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEnableRockstarHotkey.Enabled = false;
             this.chkEnableRockstarHotkey.Location = new System.Drawing.Point(9, 135);
             this.chkEnableRockstarHotkey.Name = "chkEnableRockstarHotkey";
             this.chkEnableRockstarHotkey.Size = new System.Drawing.Size(145, 23);
@@ -301,6 +303,7 @@
             // 
             // lbDestiny
             // 
+            this.lbDestiny.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lbDestiny.ForeColor = System.Drawing.SystemColors.ControlText;
             this.lbDestiny.Location = new System.Drawing.Point(217, 4);
             this.lbDestiny.Name = "lbDestiny";
@@ -340,7 +343,14 @@
             this.tsmiSelectLanguage,
             this.tscbLanguages});
             this.cmsLanguageSelect.Name = "cmsLanguageSelect";
-            this.cmsLanguageSelect.Size = new System.Drawing.Size(198, 73);
+            this.cmsLanguageSelect.Size = new System.Drawing.Size(198, 51);
+            // 
+            // tsmiSelectLanguage
+            // 
+            this.tsmiSelectLanguage.Enabled = false;
+            this.tsmiSelectLanguage.Name = "tsmiSelectLanguage";
+            this.tsmiSelectLanguage.Size = new System.Drawing.Size(197, 22);
+            this.tsmiSelectLanguage.Text = "tsmiSelectNewLanguage";
             // 
             // tscbLanguages
             // 
@@ -350,13 +360,6 @@
             this.tscbLanguages.Name = "tscbLanguages";
             this.tscbLanguages.Size = new System.Drawing.Size(121, 21);
             this.tscbLanguages.SelectedIndexChanged += new System.EventHandler(this.tscbLanguages_SelectedIndexChanged);
-            // 
-            // tsmiSelectLanguage
-            // 
-            this.tsmiSelectLanguage.Enabled = false;
-            this.tsmiSelectLanguage.Name = "tsmiSelectLanguage";
-            this.tsmiSelectLanguage.Size = new System.Drawing.Size(197, 22);
-            this.tsmiSelectLanguage.Text = "tsmiSelectNewLanguage";
             // 
             // frmMain
             // 
