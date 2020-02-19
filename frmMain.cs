@@ -1,4 +1,4 @@
-﻿using NetFwTypeLib;
+using NetFwTypeLib;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -214,10 +214,16 @@ namespace SoloMatchmaking {
             chkEnableDestinyHotkey.Text = lang.chkEnableDestinyHotkey;
             btnToggleDestiny.Text = lang.btnToggleDestinyOff;
             ttMain.SetToolTip(this.lbDestinyHotkey, lang.ttMainChangeDestinyHotkey);
-            if (Configuration.Default.DestinyHotkeyModifier != "None") {
-                bufferHotkey += Configuration.Default.DestinyHotkeyModifier + " + ";
+            if (chkEnableDestinyHotkey.Checked) {
+                if (Configuration.Default.DestinyHotkeyModifier != "None") {
+                    bufferHotkey += Configuration.Default.DestinyHotkeyModifier + " + ";
+                }
+                bufferHotkey += Configuration.Default.DestinyHotkeyKey + ") " + lang.HotkeyToggle;
             }
-            bufferHotkey += Configuration.Default.DestinyHotkeyKey + ") " + lang.HotkeyToggle;
+            else {
+                bufferHotkey = lang.HotkeyDisabled;
+            }
+
             lbDestinyHotkey.Text = bufferHotkey;
 
             bufferHotkey = "(";
@@ -228,10 +234,15 @@ namespace SoloMatchmaking {
             btnRemoveRockstarRange.Text = lang.btnRemoveRockstarRange;
             btnToggleRockstar.Text = lang.btnToggleRockstarOff;
             ttMain.SetToolTip(this.lbRockstarHotkey, lang.ttMainChangeRockstarHotkey);
-            if (Configuration.Default.RockstarHotkeyModifier != "None") {
-                bufferHotkey += Configuration.Default.RockstarHotkeyModifier + " + ";
+            if (chkEnableRockstarHotkey.Checked) {
+                if (Configuration.Default.RockstarHotkeyModifier != "None") {
+                    bufferHotkey += Configuration.Default.RockstarHotkeyModifier + " + ";
+                }
+                bufferHotkey += Configuration.Default.RockstarHotkeyKey + ") " + lang.HotkeyToggle;
             }
-            bufferHotkey += Configuration.Default.RockstarHotkeyKey + ") " + lang.HotkeyToggle;
+            else {
+                bufferHotkey = lang.HotkeyDisabled;
+            }
             lbRockstarHotkey.Text = bufferHotkey;
             rtbRockstarInfo.Text = lang.rtbRockstarInfo;
         }
