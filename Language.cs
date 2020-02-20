@@ -413,8 +413,26 @@ namespace SoloMatchmaking {
                         if (ReadLine.StartsWith("//") || ReadLine.Trim(' ') == (""))
                             continue;
 
-                        if (ReadLine.StartsWith("[") & ReadLine.EndsWith("]")) {
-                            CurrentLanguageLong = ReadLine.Trim('[').Trim(']');
+                        //if (ReadLine.StartsWith("[") & ReadLine.EndsWith("]")) {
+                        //    CurrentLanguageLong = ReadLine.Trim('[').Trim(']');
+                        //    continue;
+                        //}
+                        if (ReadLine.StartsWith("[")) {
+                            if (ReadLine.Contains("//")) {
+                                int CountedForwardSlashes = 0;
+                                int CountedLength = 0;
+                                for (int j = 0; j < ReadLine.Length; j++) {
+                                    CountedLength++;
+                                    if (ReadLine[j] == '/') {
+                                        CountedForwardSlashes++;
+                                        if (CountedForwardSlashes == 2) { break; }
+                                        continue;
+                                    }
+                                }
+                                CountedLength = CountedLength - 2;
+                                ReadLine = ReadLine.Substring(0, CountedLength);
+                            }
+                            CurrentLanguageLong = ReadLine.Trim(' ').Trim('[').Trim(']');
                             continue;
                         }
                         else {
@@ -453,7 +471,7 @@ namespace SoloMatchmaking {
                                 }
                             }
                             CountedLength = CountedLength - 2;
-                            ReadLine = ReadLine.Substring(0, CountedLength);
+                            ReadLine = ReadLine.Substring(0, CountedLength).Trim(' ');
                         }
 
                         if (ReadControl == "CurrentLanguageShort") {
