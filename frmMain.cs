@@ -180,7 +180,7 @@ namespace SoloMatchmaking {
                 }
                 else {
                     if (File.Exists(Environment.CurrentDirectory + "\\lang\\" + Configuration.Default.LanguageFile + ".ini")) {
-                        lang.LoadLanguage(Configuration.Default.LanguageFile);
+                        lang.LoadLanguage(Environment.CurrentDirectory + "\\lang\\" + Configuration.Default.LanguageFile);
                         tscbLanguages.ComboBox.SelectedIndex = tscbLanguages.ComboBox.FindStringExact(Configuration.Default.LanguageFile);
                     }
                     else {
@@ -199,7 +199,7 @@ namespace SoloMatchmaking {
                 }
                 else {
                     if (File.Exists(Environment.CurrentDirectory + "\\lang\\" + Configuration.Default.LanguageFile + ".ini")) {
-                        lang.LoadLanguage(Configuration.Default.LanguageFile);
+                        lang.LoadLanguage(Environment.CurrentDirectory + "\\lang\\" + Configuration.Default.LanguageFile);
                         tscbLanguages.ComboBox.SelectedIndex = tscbLanguages.ComboBox.FindStringExact(Configuration.Default.LanguageFile);
                     }
                     else {
@@ -293,13 +293,16 @@ namespace SoloMatchmaking {
             lbIsAdmin.Text = "isAdmin = " + isAdmin.ToString();
         }
         void loadSettings() {
+            loadConfiguration();
+
+            chkEnableDestinyHotkey.Checked = Configuration.Default.EnableDestinyHotkeys;
+            chkEnableRockstarHotkey.Checked = Configuration.Default.EnableRockstarHotkeys;
+        }
+        void loadConfiguration() {
             destinyPorts = Configuration.Default.DestinyPorts;
             destinyNames = Configuration.Default.DestinyNames.Split(',');
             rockstarPorts = Configuration.Default.RockstarPorts;
             rockstarNames = Configuration.Default.RockstarNames.Split(',');
-
-            chkEnableDestinyHotkey.Checked = Configuration.Default.EnableDestinyHotkeys;
-            chkEnableRockstarHotkey.Checked = Configuration.Default.EnableRockstarHotkeys;
         }
 
         void throwError() {
@@ -428,9 +431,6 @@ namespace SoloMatchmaking {
         }
 
         void checkRules() {
-            if (!isAdmin)
-                return;
-
             try {
                 Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
                 INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
@@ -554,51 +554,72 @@ namespace SoloMatchmaking {
         }
 
         bool CreateDestinyRules() {
+            if (Program.IsDebugging) {
+                if (string.IsNullOrEmpty(Configuration.Default.Destiny2Program) || !File.Exists(Configuration.Default.Destiny2Program)) {
+                    MessageBox.Show("Destiny 2 application was not specified, please specify it.");
+                    using (OpenFileDialog ofd = new OpenFileDialog()) {
+                        ofd.Title = "Open destiny2.exe";
+                        ofd.Filter = "Destiny 2 (destiny2.exe)|destiny2.exe";
+                        if (ofd.ShowDialog() == DialogResult.OK) {
+                            Configuration.Default.Destiny2Program = ofd.FileName;
+                            Configuration.Default.Save();
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+            }
+
             try {
                 INetFwRule2 outTCP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
                 outTCP.Name = destinyNames[0];
+                //outTCP.ApplicationName = Configuration.Default.Destiny2Program;
                 outTCP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
                 outTCP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
                 outTCP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
                 outTCP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
                 outTCP.Protocol = ruleProtocol[0];
-                outTCP.LocalPorts = destinyPorts;
+                outTCP.RemotePorts = destinyPorts;
                 outTCP.InterfaceTypes = "All";
                 outTCP.Enabled = true;
                 Console.WriteLine("Destiny 2 outTCP created");
 
                 INetFwRule2 outUDP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
                 outUDP.Name = destinyNames[1];
+                //outUDP.ApplicationName = Configuration.Default.Destiny2Program;
                 outUDP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
                 outUDP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
                 outUDP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
                 outUDP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
                 outUDP.Protocol = ruleProtocol[1];
-                outUDP.LocalPorts = destinyPorts;
+                outUDP.RemotePorts = destinyPorts;
                 outUDP.InterfaceTypes = "All";
                 outUDP.Enabled = true;
                 Console.WriteLine("Destiny 2 outUDP created");
 
                 INetFwRule2 inTCP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
                 inTCP.Name = destinyNames[2];
+                //inTCP.ApplicationName = Configuration.Default.Destiny2Program;
                 inTCP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
                 inTCP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
                 inTCP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
                 inTCP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
                 inTCP.Protocol = ruleProtocol[0];
-                inTCP.LocalPorts = destinyPorts;
+                inTCP.RemotePorts = destinyPorts;
                 inTCP.InterfaceTypes = "All";
                 inTCP.Enabled = true;
                 Console.WriteLine("Destiny 2 inTCP created");
 
                 INetFwRule2 inUDP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
                 inUDP.Name = destinyNames[3];
+                //inUDP.ApplicationName = Configuration.Default.Destiny2Program;
                 inUDP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
                 inUDP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
                 inUDP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
                 inUDP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
                 inUDP.Protocol = ruleProtocol[1];
-                inUDP.LocalPorts = destinyPorts;
+                inUDP.RemotePorts = destinyPorts;
                 inUDP.InterfaceTypes = "All";
                 inUDP.Enabled = true;
                 Console.WriteLine("Destiny 2 inUDP created");
@@ -795,7 +816,7 @@ namespace SoloMatchmaking {
                 setLanguage(true);
                 Configuration.Default.Save();
             }
-            if (lang.LoadLanguage(tscbLanguages.ComboBox.GetItemText(tscbLanguages.ComboBox.SelectedItem))) {
+            if (lang.LoadLanguage(Environment.CurrentDirectory + "\\lang\\" + tscbLanguages.ComboBox.GetItemText(tscbLanguages.ComboBox.SelectedItem))) {
                 Configuration.Default.LanguageFile = tscbLanguages.ComboBox.GetItemText(tscbLanguages.ComboBox.SelectedItem);
                 setLanguage(true);
                 Configuration.Default.Save();
