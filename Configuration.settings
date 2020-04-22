@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="DestinyPorts" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1935,3097,3478-3480</Value>
+      <Value Profile="(Default)">27000-27200,3097</Value>
     </Setting>
     <Setting Name="DestinyNames" Type="System.String" Scope="User">
       <Value Profile="(Default)">Destiny2SoloMMBlockOutTCP,Destiny2SoloMMBlockOutUDP,Destiny2SoloMMBlockInTCP,Destiny2SoloMMBlockInUDP</Value>
@@ -40,6 +40,12 @@
     </Setting>
     <Setting Name="LanguageFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="Destiny2Program" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="OldDestinyPorts" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1935,3097,3478-3480</Value>
     </Setting>
   </Settings>
 </SettingsFile>

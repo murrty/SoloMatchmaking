@@ -25,7 +25,7 @@ namespace SoloMatchmaking {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1935,3097,3478-3480")]
+        [global::System.Configuration.DefaultSettingValueAttribute("27000-27200,3097")]
         public string DestinyPorts {
             get {
                 return ((string)(this["DestinyPorts"]));
@@ -177,6 +177,30 @@ namespace SoloMatchmaking {
             }
             set {
                 this["LanguageFile"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Destiny2Program {
+            get {
+                return ((string)(this["Destiny2Program"]));
+            }
+            set {
+                this["Destiny2Program"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1935,3097,3478-3480")]
+        public string OldDestinyPorts {
+            get {
+                return ((string)(this["OldDestinyPorts"]));
+            }
+            set {
+                this["OldDestinyPorts"] = value;
             }
         }
     }
