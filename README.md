@@ -17,5 +17,7 @@ You can comment out lines / parts of lines by using 2 forward slashes "//". It w
 
 There's a ini file in the folder called "English.ini", it's in English and can be used as a base for translating.
 
+Some newer stuff is not translatable, until there's more interest in this application it'll only be in English.
+
 ## :) ##
 please smile

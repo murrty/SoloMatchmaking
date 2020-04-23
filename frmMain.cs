@@ -504,7 +504,7 @@ namespace SoloMatchmaking {
 
                     case 2:
                         if (fwRules.RockstarGamesRulesActivated) {
-                            if (fwRules.ToggleRockstarRules(false)) {
+                            if (fwRules.ToggleRockstarRules(false, getRockstarRange(lbRockstarRanges))) {
                                 lbRockstar.Text = lang.lbRockstarOff;
                                 btnToggleRockstar.Text = lang.btnToggleRockstarOff;
                                 fwRules.RockstarGamesRulesActivated = false;
@@ -512,7 +512,7 @@ namespace SoloMatchmaking {
                             }
                         }
                         else {
-                            if (fwRules.ToggleRockstarRules(true)) {
+                            if (fwRules.ToggleRockstarRules(true, getRockstarRange(lbRockstarRanges))) {
                                 lbRockstar.Text = lang.lbRockstarOn;
                                 btnToggleRockstar.Text = lang.btnToggleRockstarOn;
                                 fwRules.RockstarGamesRulesActivated = true;
@@ -559,7 +559,7 @@ namespace SoloMatchmaking {
 
         bool CreateRockstarRules() {
             try {
-                if (fwRules.CreateRockstarRule(-1))
+                if (fwRules.CreateRockstarRule(-1, getRockstarRange(lbRockstarRanges)))
                     return true;
                 else
                     return false;

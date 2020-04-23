@@ -3,28 +3,22 @@
   <Profiles />
   <Settings>
     <Setting Name="DestinyPorts" Type="System.String" Scope="User">
-      <Value Profile="(Default)">27000-27200,3097</Value>
+      <Value Profile="(Default)">3097,27000-27200</Value>
     </Setting>
-    <Setting Name="DestinyNames" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Destiny2SoloMMBlockOutTCP,Destiny2SoloMMBlockOutUDP,Destiny2SoloMMBlockInTCP,Destiny2SoloMMBlockInUDP</Value>
+    <Setting Name="DestinyName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Destiny2Solo</Value>
     </Setting>
     <Setting Name="RockstarPorts" Type="System.String" Scope="User">
       <Value Profile="(Default)">6672</Value>
     </Setting>
-    <Setting Name="RockstarNames" Type="System.String" Scope="User">
-      <Value Profile="(Default)">RockstarSoloMMBlockOutUDP,RockstarSoloMMBlockInUDP</Value>
+    <Setting Name="RockstarName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">RockstarSolo</Value>
     </Setting>
     <Setting Name="EnableDestinyHotkeys" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="EnableRockstarHotkeys" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="LastPosX" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-99999999</Value>
-    </Setting>
-    <Setting Name="LastPosY" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-99999999</Value>
     </Setting>
     <Setting Name="DestinyHotkeyModifier" Type="System.String" Scope="User">
       <Value Profile="(Default)">Ctrl</Value>
@@ -41,11 +35,29 @@
     <Setting Name="LanguageFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="Destiny2Program" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="OldDestinyPorts" Type="System.String" Scope="User">
       <Value Profile="(Default)">1935,3097,3478-3480</Value>
+    </Setting>
+    <Setting Name="LastPos" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">-99999999, -99999999</Value>
+    </Setting>
+    <Setting Name="SynthVolume" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">50</Value>
+    </Setting>
+    <Setting Name="SynthSpeed" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-2</Value>
+    </Setting>
+    <Setting Name="DestinyBlockLocalPorts" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DestinyBlockRemotePorts" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="DestinySpecifyApplication" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DestinyExecutable" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

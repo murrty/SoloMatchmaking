@@ -5,6 +5,7 @@ using System.Windows.Forms;
 
 namespace SoloMatchmaking {
     static class Program {
+        static readonly string Guid = "12e53a3e-e1de-46e9-a672-f44e32fecbc1";
         static Mutex mtx = new Mutex(true, "{SoloMatchmaking-12e53a3e-e1de-46e9-a672}");
         public const int HWND_BROADCAST = 0xffff;
         public static readonly int WM_SHOWFORM = RegisterWindowMessage("WM_SHOWFORM");

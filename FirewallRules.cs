@@ -23,7 +23,6 @@ class FirewallRules {
 
     private static volatile string _RockstarGamesRulesName = "RockstarSolo";        // Name
     private static volatile string _RockstarGamesPorts = "6672";                    // Ports
-    private static volatile string _RockstarGamesRange = "1.1.1.1-255.255.255.255"; // IP Range
     private static volatile bool _RockstarGamesOutUDPRuleCreated = false;           // OutUDP Created
     private static volatile bool _RockstarGamesInUDPRuleCreated = false;            // InUDP Created
     private static volatile bool _RockstarGamesOutUDPEnabled = false;               // OutUDP Enabled
@@ -141,6 +140,20 @@ class FirewallRules {
                 continue;
             }
         }
+
+        if (_Destiny2OutTCPEnabled || _Destiny2OutUDPEnabled || _Destiny2InTCPEnabled || _Destiny2InUDPEnabled) {
+            _Destiny2RulesAcitvated = true;
+        }
+        else {
+            _Destiny2RulesAcitvated = false;
+        }
+
+        if (_RockstarGamesOutUDPEnabled || _RockstarGamesInUDPEnabled) {
+            _RockstarGamesRulesActivated = true;
+        }
+        else {
+            _RockstarGamesRulesActivated = false;
+        }
     }
 
     public bool CreateDestinyRule(int RuleType) {
@@ -242,36 +255,52 @@ class FirewallRules {
                 #region All Rules
                 case -1:
                     firewallPolicy.Rules.Add(outTCP);
+                    _Destiny2OutTCPRuleCreated = true;
+                    _Destiny2OutTCPEnabled = true;
                     Console.WriteLine("Destiny 2 added OutTCP to the firewall");
                     firewallPolicy.Rules.Add(outUDP);
+                    _Destiny2OutUDPRuleCreated = true;
+                    _Destiny2OutUDPEnabled = true;
                     Console.WriteLine("Destiny 2 added OutUDP to the firewall");
                     firewallPolicy.Rules.Add(inTCP);
+                    _Destiny2InTCPRuleCreated = true;
+                    _Destiny2InTCPEnabled = true;
                     Console.WriteLine("Destiny 2 added InTCP to the firewall");
                     firewallPolicy.Rules.Add(inUDP);
+                    _Destiny2InUDPRuleCreated = true;
+                    _Destiny2InUDPEnabled = true;
                     Console.WriteLine("Destiny 2 added InUDP to the firewall");
                     return true;
                 #endregion
                 #region OutTCP
                 case 0:
                     firewallPolicy.Rules.Add(outTCP);
+                    _Destiny2OutTCPRuleCreated = true;
+                    _Destiny2OutTCPEnabled = true;
                     Console.WriteLine("Destiny 2 added OutTCP to the firewall");
                     return true;
                 #endregion
                 #region OutUDP
                 case 1:
                     firewallPolicy.Rules.Add(outUDP);
+                    _Destiny2OutUDPRuleCreated = true;
+                    _Destiny2OutUDPEnabled = true;
                     Console.WriteLine("Destiny 2 added OutUDP to the firewall");
                     return true;
                 #endregion
                 #region InTCP
                 case 2:
                     firewallPolicy.Rules.Add(inTCP);
+                    _Destiny2InTCPRuleCreated = true;
+                    _Destiny2InTCPEnabled = true;
                     Console.WriteLine("Destiny 2 added InTCP to the firewall");
                     return true;
                 #endregion
                 #region InUDP
                 case 3:
                     firewallPolicy.Rules.Add(inUDP);
+                    _Destiny2InUDPRuleCreated = true;
+                    _Destiny2InUDPEnabled = true;
                     Console.WriteLine("Destiny 2 added InUDP to the firewall");
                     return true;
                 #endregion
@@ -283,7 +312,7 @@ class FirewallRules {
             throw ex;
         }
     }
-    public bool CreateRockstarRule(int RuleType) {
+    public bool CreateRockstarRule(int RuleType, string Range) {
         try {
 
             #region Rules buffer
@@ -300,7 +329,7 @@ class FirewallRules {
             outUDP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
             outUDP.Protocol = PortProtocol.UDP;
             outUDP.LocalPorts = _RockstarGamesPorts;
-            outUDP.RemoteAddresses = _RockstarGamesRange;
+            outUDP.RemoteAddresses = Range;
             outUDP.InterfaceTypes = "All";
             outUDP.Enabled = true;
             Console.WriteLine("Rockstar OutUDP created");
@@ -314,7 +343,7 @@ class FirewallRules {
             inUDP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
             inUDP.Protocol = PortProtocol.UDP;
             inUDP.LocalPorts = _RockstarGamesPorts;
-            inUDP.RemoteAddresses = _RockstarGamesRange;
+            inUDP.RemoteAddresses = Range;
             inUDP.InterfaceTypes = "All";
             inUDP.Enabled = true;
             Console.WriteLine("Rockstar InUDP created");
@@ -323,17 +352,28 @@ class FirewallRules {
             switch (RuleType) {
                 case -1: // All
                     firewallPolicy.Rules.Add(outUDP);
+                    _RockstarGamesOutUDPRuleCreated = true;
+                    _RockstarGamesOutUDPEnabled = true;
                     Console.WriteLine("Rockstar added OutUDP to the firewall");
                     firewallPolicy.Rules.Add(inUDP);
+                    _RockstarGamesInUDPRuleCreated = true;
+                    _RockstarGamesInUDPEnabled = true;
                     Console.WriteLine("Rockstar added InUDP to the firewall");
+                    _RockstarGamesRulesActivated = true;
                     return true;
                 case 0: //outUDP
                     firewallPolicy.Rules.Add(outUDP);
+                    _RockstarGamesOutUDPRuleCreated = true;
+                    _RockstarGamesOutUDPEnabled = true;
                     Console.WriteLine("Rockstar added OutUDP to the firewall");
+                    _RockstarGamesRulesActivated = true;
                     return true;
                 case 1: //inUDP
                     firewallPolicy.Rules.Add(inUDP);
+                    _RockstarGamesInUDPRuleCreated = true;
+                    _RockstarGamesInUDPEnabled = true;
                     Console.WriteLine("Rockstar added InUDP to the firewall");
+                    _RockstarGamesRulesActivated = true;
                     return true;
                 default:
                     return false;
@@ -364,18 +404,89 @@ class FirewallRules {
             foreach (INetFwRule FoundRule in fwPolicy.Rules) {
                 if (FoundRule.Name == _Destiny2RulesName + "OutTCP") {
                     FoundRule.Enabled = Enabled;
+                    _Destiny2OutTCPEnabled = Enabled;
                     continue;
                 }
                 else if (FoundRule.Name == _Destiny2RulesName + "OutUDP") {
                     FoundRule.Enabled = Enabled;
+                    _Destiny2OutUDPEnabled = Enabled;
                     continue;
                 }
                 else if (FoundRule.Name == _Destiny2RulesName + "InTCP") {
                     FoundRule.Enabled = Enabled;
+                    _Destiny2InTCPEnabled = Enabled;
                     continue;
                 }
                 else if (FoundRule.Name == _Destiny2RulesName + "InUDP") {
                     FoundRule.Enabled = Enabled;
+                    _Destiny2InUDPEnabled = Enabled;
+                    continue;
+                }
+            }
+
+            _Destiny2RulesAcitvated = Enabled;
+
+            return true;
+        }
+        catch (Exception ex) { throw ex; }
+    }
+    public bool ToggleRockstarRules(bool Enabled, string Range) {
+        try {
+            if (Enabled) {
+                CreateRockstarRule(-1, Range);
+            }
+            else {
+                DeleteRockstarRules();
+            }
+
+            _RockstarGamesRulesActivated = Enabled;
+
+            //if (!_RockstarGamesOutUDPRuleCreated) {
+            //    CreateRockstarRule(RockstarGamesRuleTypes.OutUDP);
+            //}
+            //if (!_RockstarGamesInUDPRuleCreated) {
+            //    CreateRockstarRule(RockstarGamesRuleTypes.InUDP);
+            //}
+
+            //Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+            //INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
+
+            //foreach (INetFwRule FoundRule in fwPolicy.Rules) {
+            //    if (FoundRule.Name == _RockstarGamesRulesName + "OutUDP") {
+            //        FoundRule.Enabled = Enabled;
+            //        continue;
+            //    }
+            //    else if (FoundRule.Name == _RockstarGamesRulesName + "InUDP") {
+            //        FoundRule.Enabled = Enabled;
+            //        continue;
+            //    }
+            //}
+
+            return true;
+        }
+        catch (Exception ex) { throw ex; }
+    }
+
+    public bool RenameDestinyRules(string NewName) {
+        try {
+            Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+            INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
+
+            foreach (INetFwRule FoundRule in fwPolicy.Rules) {
+                if (FoundRule.Name == _Destiny2RulesName + "OutTCP") {
+                    FoundRule.Name = NewName + "OutTCP";
+                    continue;
+                }
+                else if (FoundRule.Name == _Destiny2RulesName + "OutUDP") {
+                    FoundRule.Name = NewName + "OutUDP";
+                    continue;
+                }
+                else if (FoundRule.Name == _Destiny2RulesName + "InTCP") {
+                    FoundRule.Name = NewName + "InTCP";
+                    continue;
+                }
+                else if (FoundRule.Name == _Destiny2RulesName + "InUDP") {
+                    FoundRule.Name = NewName + "InUDP";
                     continue;
                 }
             }
@@ -384,30 +495,138 @@ class FirewallRules {
         }
         catch (Exception ex) { throw ex; }
     }
-    public bool ToggleRockstarRules(bool Enabled) {
+    public bool RenameRockstarRules(string NewName) {
         try {
-
-            if (!_RockstarGamesOutUDPRuleCreated) {
-                CreateRockstarRule(RockstarGamesRuleTypes.OutUDP);
-            }
-            if (!_RockstarGamesInUDPRuleCreated) {
-                CreateRockstarRule(RockstarGamesRuleTypes.InUDP);
-            }
-
             Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
             INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
 
             foreach (INetFwRule FoundRule in fwPolicy.Rules) {
                 if (FoundRule.Name == _RockstarGamesRulesName + "OutUDP") {
-                    FoundRule.Enabled = Enabled;
+                    FoundRule.Name = NewName + "OutUDP";
                     continue;
                 }
                 else if (FoundRule.Name == _RockstarGamesRulesName + "InUDP") {
-                    FoundRule.Enabled = Enabled;
+                    FoundRule.Name = NewName + "InUDP";
                     continue;
                 }
             }
 
+            return true;
+        }
+        catch (Exception ex) { throw ex; }
+    }
+
+    public bool UpdateDestinyRules() {
+        try {
+            Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+            INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
+
+            foreach (INetFwRule FoundRule in fwPolicy.Rules) {
+                if (FoundRule.Name == _Destiny2RulesName + "OutTCP") {
+                    if (Configuration.Default.DestinyBlockLocalPorts) {
+                        FoundRule.LocalPorts = Configuration.Default.DestinyPorts;
+                    }
+                    else {
+                        FoundRule.LocalPorts = string.Empty;
+                    }
+                    if (Configuration.Default.DestinyBlockRemotePorts) {
+                        FoundRule.RemotePorts = Configuration.Default.DestinyPorts;
+                    }
+                    else {
+                        FoundRule.RemotePorts = string.Empty;
+                    }
+                    if (Configuration.Default.DestinySpecifyApplication) {
+                        FoundRule.ApplicationName = Configuration.Default.DestinyExecutable;
+                    }
+                    else {
+                        FoundRule.ApplicationName = null;
+                    }
+                    continue;
+                }
+                else if (FoundRule.Name == _Destiny2RulesName + "OutUDP") {
+                    if (Configuration.Default.DestinyBlockLocalPorts) {
+                        FoundRule.LocalPorts = Configuration.Default.DestinyPorts;
+                    }
+                    else {
+                        FoundRule.LocalPorts = string.Empty;
+                    }
+                    if (Configuration.Default.DestinyBlockRemotePorts) {
+                        FoundRule.RemotePorts = Configuration.Default.DestinyPorts;
+                    }
+                    else {
+                        FoundRule.RemotePorts = string.Empty;
+                    }
+                    if (Configuration.Default.DestinySpecifyApplication) {
+                        FoundRule.ApplicationName = Configuration.Default.DestinyExecutable;
+                    }
+                    else {
+                        FoundRule.ApplicationName = null;
+                    }
+                    continue;
+                }
+                else if (FoundRule.Name == _Destiny2RulesName + "InTCP") {
+                    if (Configuration.Default.DestinyBlockLocalPorts) {
+                        FoundRule.LocalPorts = Configuration.Default.DestinyPorts;
+                    }
+                    else {
+                        FoundRule.LocalPorts = string.Empty;
+                    }
+                    if (Configuration.Default.DestinyBlockRemotePorts) {
+                        FoundRule.RemotePorts = Configuration.Default.DestinyPorts;
+                    }
+                    else {
+                        FoundRule.RemotePorts = string.Empty;
+                    }
+                    if (Configuration.Default.DestinySpecifyApplication) {
+                        FoundRule.ApplicationName = Configuration.Default.DestinyExecutable;
+                    }
+                    else {
+                        FoundRule.ApplicationName = null;
+                    }
+                    continue;
+                }
+                else if (FoundRule.Name == _Destiny2RulesName + "InUDP") {
+                    if (Configuration.Default.DestinyBlockLocalPorts) {
+                        FoundRule.LocalPorts = Configuration.Default.DestinyPorts;
+                    }
+                    else {
+                        FoundRule.LocalPorts = string.Empty;
+                    }
+                    if (Configuration.Default.DestinyBlockRemotePorts) {
+                        FoundRule.RemotePorts = Configuration.Default.DestinyPorts;
+                    }
+                    else {
+                        FoundRule.RemotePorts = string.Empty;
+                    }
+                    if (Configuration.Default.DestinySpecifyApplication) {
+                        FoundRule.ApplicationName = Configuration.Default.DestinyExecutable;
+                    }
+                    else {
+                        FoundRule.ApplicationName = null;
+                    }
+                    continue;
+                }
+            }
+
+            return true;
+        }
+        catch (Exception ex) { throw ex; }
+    }
+    public bool UpdateRockstarRules() {
+        try {
+            Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
+            INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
+
+            foreach (INetFwRule FoundRule in fwPolicy.Rules) {
+                if (FoundRule.Name == _RockstarGamesRulesName + "OutUDP") {
+                    FoundRule.LocalPorts = Configuration.Default.RockstarPorts;
+                    continue;
+                }
+                else if (FoundRule.Name == _RockstarGamesRulesName + "InUDP") {
+                    FoundRule.LocalPorts = Configuration.Default.RockstarPorts;
+                    continue;
+                }
+            }
             return true;
         }
         catch (Exception ex) { throw ex; }
@@ -419,13 +638,23 @@ class FirewallRules {
             INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
 
             fwPolicy.Rules.Remove(_Destiny2RulesName + "OutTCP");
+            _Destiny2OutTCPRuleCreated = false;
+            _Destiny2OutTCPEnabled = false;
             Console.WriteLine("Destiny 2 OutTCP has been removed");
             fwPolicy.Rules.Remove(_Destiny2RulesName + "OutUDP");
+            _Destiny2OutUDPRuleCreated = false;
+            _Destiny2OutUDPEnabled = false;
             Console.WriteLine("Destiny 2 OutUDP has been removed");
             fwPolicy.Rules.Remove(_Destiny2RulesName + "InTCP");
+            _Destiny2InTCPRuleCreated = false;
+            _Destiny2InTCPEnabled = false;
             Console.WriteLine("Destiny 2 InTCP has been removed");
             fwPolicy.Rules.Remove(_Destiny2RulesName + "InUDP");
+            _Destiny2InUDPRuleCreated = false;
+            _Destiny2InUDPEnabled = false;
             Console.WriteLine("Destiny 2 InUDP has been removed");
+
+            _Destiny2RulesAcitvated = false;
             return true;
         }
         catch (Exception ex) { throw ex; }
@@ -436,9 +665,15 @@ class FirewallRules {
             INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
 
             fwPolicy.Rules.Remove(_RockstarGamesRulesName + "OutUDP");
+            _RockstarGamesOutUDPRuleCreated = false;
+            _RockstarGamesOutUDPEnabled = false;
             Console.WriteLine("Rockstar OutUDP has been removed");
             fwPolicy.Rules.Remove(_RockstarGamesRulesName + "InUDP");
+            _RockstarGamesInUDPRuleCreated = false;
+            _RockstarGamesInUDPEnabled = false;
             Console.WriteLine("Rockstar InUDP has been removed");
+
+            _RockstarGamesRulesActivated = false;
             return true;
         }
         catch (Exception ex) { throw ex; }

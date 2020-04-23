@@ -10,6 +10,7 @@ namespace SoloMatchmaking {
         private static volatile string CurrentLanguageLongString = "CurrentLanguageLong";               // ID 0
         private static volatile string CurrentLanguageShortString = "CurrentLanguageShort";             // ID 1
         private static volatile string CurrentLanguageHintString = "CurrentLanguageHint";               // ID 2
+        private static volatile string CurrentLanguageVersionString = "1.0";
 
         // Globally used
         private static volatile string HotkeyToggleString = "HotkeyToggle";                             // ID 3
@@ -18,7 +19,7 @@ namespace SoloMatchmaking {
 
         // frmMain
         private static volatile string frmMainAdminString = "frmMainAdmin";                             // ID 6
-        private static volatile string frmMainNoAdminString = "frmMain";                                       // ID 7
+        private static volatile string frmMainNoAdminString = "frmMainNoAdmin";                         // ID 7
         private static volatile string lbDestinyOffString = "lbDestinyOff";                             // ID 8
         private static volatile string lbDestinyOnString = "lbDestinyOn";                               // ID 9
         private static volatile string lbRockstarOffString = "lbRockstarOff";                           // ID 10
@@ -78,6 +79,10 @@ namespace SoloMatchmaking {
         public string CurrentLanguageHint {
             get { return CurrentLanguageHintString; }
             private set { CurrentLanguageHintString = value; }
+        }
+        public string CurrentLanguageVersion {
+            get { return CurrentLanguageVersionString; }
+            private set { CurrentLanguageVersionString = value; }
         }
 
 //////////////// Globally used \\\\\\\\\\\\\\\\
@@ -266,6 +271,7 @@ namespace SoloMatchmaking {
         public static readonly string CurrentLanguageLong = "English (Internal)";
         public static readonly string CurrentLanguageShort = "en-i";
         public static readonly string CurrentLanguageHint = "CurrentLanguageHint";
+        public static readonly string currentLanguageVersion = "1";
 
         // Globally used
         public static readonly string HotkeyToggle = "to toggle";
@@ -398,261 +404,222 @@ namespace SoloMatchmaking {
         #endregion
 
         #region LoadLanguage
-        public bool LoadLanguage(string LanguageFileName) {
-            if (LanguageFileName == LoadedFile || LanguageFileName == null || LanguageFileName == string.Empty) { return false; }
+        public bool LoadLanguage(string LanguageFile) {
+            if (LanguageFile == LoadedFile || LanguageFile == null || LanguageFile == string.Empty) { return false; }
 
-            if (!LanguageFileName.EndsWith(".ini")) { LanguageFileName += ".ini"; }
+            if (!LanguageFile.EndsWith(".ini")) { LanguageFile += ".ini"; }
             
-            if (System.IO.File.Exists(Environment.CurrentDirectory + "\\lang\\" + LanguageFileName)) {
+            if (System.IO.File.Exists(LanguageFile)) {
                 try {
-                    string[] ReadFile = System.IO.File.ReadAllLines(Environment.CurrentDirectory + "\\lang\\" + LanguageFileName);
+                    string[] ReadFile = System.IO.File.ReadAllLines(LanguageFile);
 
                     for (int i = 0; i < ReadFile.Length; i++) {
+                        if (ReadFile[i].StartsWith("rtb")) {
+                            System.Diagnostics.Debug.Print("Caught");
+                        }
                         string ReadLine = ReadFile[i];
-                        string ReadControl = string.Empty;
-                        if (ReadLine.StartsWith("//") || ReadLine.Trim(' ') == (""))
-                            continue;
+                        string ReadControl = null;
+                        string ReadValue = null;
+                        string ReadHeader = null;
+                        if (ReadLine.StartsWith("//")) { continue; }
 
-                        //if (ReadLine.StartsWith("[") & ReadLine.EndsWith("]")) {
-                        //    CurrentLanguageLong = ReadLine.Trim('[').Trim(']');
-                        //    continue;
-                        //}
                         if (ReadLine.StartsWith("[")) {
-                            if (ReadLine.Contains("//")) {
-                                int CountedForwardSlashes = 0;
-                                int CountedLength = 0;
-                                for (int j = 0; j < ReadLine.Length; j++) {
-                                    CountedLength++;
-                                    if (ReadLine[j] == '/') {
-                                        CountedForwardSlashes++;
-                                        if (CountedForwardSlashes == 2) { break; }
-                                        continue;
-                                    }
-                                }
-                                CountedLength = CountedLength - 2;
-                                ReadLine = ReadLine.Substring(0, CountedLength);
+                            ReadHeader = ReadHeaderValue(ReadLine);
+                            if (ReadHeader == null) {
+                                throw new Exception("Unable to read the language ini header\nReadValue returned null.");
                             }
-                            CurrentLanguageLong = ReadLine.Trim(' ').Trim('[').Trim(']');
-                            continue;
+                            else { continue; }
                         }
                         else {
-                            if (ReadLine.Split('=').Length > 2) {
-                                ReadControl = ReadLine.Split('=')[0];
-                                string ReadLineBuffer = string.Empty;
-                                for (int j = 1; j < ReadLine.Split('=').Length; j++) {
-                                    ReadLineBuffer += ReadLine.Split('=')[j] + "=";
-                                }
-                                if (!ReadLine.EndsWith("=")) {
-                                    ReadLineBuffer = ReadLineBuffer.TrimEnd('=');
-                                }
-                                else {
-                                    ReadLineBuffer = ReadLineBuffer.Substring(0, ReadLineBuffer.Length - 1);
-                                }
-                                ReadLine = ReadLineBuffer;
-                            }
-                            else if (ReadLine.Split('=').Length < 2) {
-                                continue;
-                            }
-                            else {
-                                ReadControl = ReadLine.Split('=')[0];
-                                ReadLine = ReadLine.Split('=')[1];
-                            }
+                            if (ReadLine == null || ReadLine.Split('=').Length < 2) { continue; }
+                            ReadControl = GetControlName(ReadLine);
+                            ReadValue = GetControlValue(ReadLine);
                         }
 
-                        if (ReadLine.Contains("//")) {
-                            int CountedForwardSlashes = 0;
-                            int CountedLength = 0;
-                            for (int j = 0; j < ReadLine.Length; j++) {
-                                CountedLength++;
-                                if (ReadLine[j] == '/') {
-                                    CountedForwardSlashes++;
-                                    if (CountedForwardSlashes == 2) { break; }
-                                    continue;
-                                }
-                            }
-                            CountedLength = CountedLength - 2;
-                            ReadLine = ReadLine.Substring(0, CountedLength).Trim(' ');
-                        }
 
                         if (ReadControl == "CurrentLanguageShort") {
-                            CurrentLanguageShort = ReadLine;
+                            CurrentLanguageShort = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "CurrentLanguageHint") {
-                            CurrentLanguageHint = ReadLine;
+                            CurrentLanguageHint = ReadValue;
+                            continue;
+                        }
+                        else if (ReadControl == "CurrentLanguageVersion") {
+                            CurrentLanguageVersion = ReadValue;
                             continue;
                         }
 
 
                         else if (ReadControl == "HotkeyToggle") {
-                            HotkeyToggle = ReadLine;
+                            HotkeyToggle = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "HotkeyDisabled") {
-                            HotkeyDisabled = ReadLine;
+                            HotkeyDisabled = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "HotkeyUnavailable") {
-                            HotkeyUnavailable = ReadLine;
+                            HotkeyUnavailable = ReadValue;
                             continue;
                         }
 
 
                         else if (ReadControl == "frmMainAdmin") {
-                            frmMainAdmin = ReadLine;
+                            frmMainAdmin = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "frmMainNoAdmin") {
-                            frmMainNoAdmin = ReadLine;
+                            frmMainNoAdmin = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbDestinyOff") {
-                            lbDestinyOff = ReadLine;
+                            lbDestinyOff = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbDestinyOn") {
-                            lbDestinyOn = ReadLine;
+                            lbDestinyOn = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbRockstarOff") {
-                            lbRockstarOff = ReadLine;
+                            lbRockstarOff = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbRockstarOn") {
-                            lbRockstarOn = ReadLine;
+                            lbRockstarOn = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "tsmiSelectLanguage") {
-                            tsmiSelectLanguage = ReadLine;
+                            tsmiSelectLanguage = ReadValue;
                             continue;
                         }
 
 
                         else if (ReadControl == "tabDestiny") {
-                            tabDestiny = ReadLine;
+                            tabDestiny = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "tabRockstar") {
-                            tabRockstar = ReadLine;
+                            tabRockstar = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "tabDebug") {
-                            tabDebug = ReadLine;
+                            tabDebug = ReadValue;
                             continue;
                         }
 
 
                         else if (ReadControl == "chkEnableDestinyHotkey") {
-                            chkEnableDestinyHotkey = ReadLine;
+                            chkEnableDestinyHotkey = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnToggleDestinyOff") {
-                            btnToggleDestinyOff = ReadLine;
+                            btnToggleDestinyOff = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnToggleDestinyOn") {
-                            btnToggleDestinyOn = ReadLine;
+                            btnToggleDestinyOn = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "ttMainChangeDestinyHotkey") {
-                            ttMainChangeDestinyHotkey = ReadLine;
+                            ttMainChangeDestinyHotkey = ReadValue;
                             continue;
                         }
 
                         else if (ReadControl == "chkEnableRockstar") {
-                            chkEnableRockstarHotkey = ReadLine;
+                            chkEnableRockstarHotkey = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnAddRockstarRange") {
-                            btnAddRockstarRange = ReadLine;
+                            btnAddRockstarRange = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnRemoveRockstarRange") {
-                            btnRemoveRockstarRange = ReadLine;
+                            btnRemoveRockstarRange = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "txtRockstarRange") {
-                            txtRockstarRange = ReadLine;
+                            txtRockstarRange = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnToggleRockstarOff") {
-                            btnToggleRockstarOff = ReadLine;
+                            btnToggleRockstarOff = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnToggleRockstarOn") {
-                            btnToggleRockstarOn = ReadLine;
+                            btnToggleRockstarOn = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "ttMainChangeRockstarHotkey") {
-                            ttMainChangeRockstarHotkey = ReadLine;
+                            ttMainChangeRockstarHotkey = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "rtbRockstarInfo") {
-                            rtbRockstarInfo = ReadLine.Replace("\\n", "\n");
+                            rtbRockstarInfo = ReadValue.Replace("\\n", "\n");
                             continue;
                         }
 
 
                         else if (ReadControl == "frmException") {
-                            frmException = ReadLine;
+                            frmException = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbExceptionHeader") {
-                            lbExceptionHeader = ReadLine;
+                            lbExceptionHeader = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbExceptionDescription") {
-                            lbExceptionDescription = ReadLine;
+                            lbExceptionDescription = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "rtbExceptionDetails") {
-                            rtbExceptionDetails = ReadLine;
+                            rtbExceptionDetails = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnExceptionGithub") {
-                            btnExceptionGithub = ReadLine;
+                            btnExceptionGithub = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnExceptionOk") {
-                            btnExceptionOk = ReadLine;
+                            btnExceptionOk = ReadValue;
                             continue;
                         }
 
 
                         else if (ReadControl == "frmNewHotkey") {
-                            frmNewHotkey = ReadLine;
+                            frmNewHotkey = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbNewHotkeyHeader") {
-                            lbNewHotkeyHeader = ReadLine;
+                            lbNewHotkeyHeader = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbNewHotkeyDescription") {
-                            lbNewHotkeyDescription = ReadLine;
+                            lbNewHotkeyDescription = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbNewHotkeyModifier") {
-                            lbNewHotkeyModifier = ReadLine;
+                            lbNewHotkeyModifier = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "lbNewHotkeyKey") {
-                            lbNewHotkeyKey = ReadLine;
+                            lbNewHotkeyKey = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnNewHotkeyResetToDefault") {
-                            btnNewHotkeyResetToDefault = ReadLine;
+                            btnNewHotkeyResetToDefault = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnNewHotkeyCancel") {
-                            btnNewHotkeyCancel = ReadLine;
+                            btnNewHotkeyCancel = ReadValue;
                             continue;
                         }
                         else if (ReadControl == "btnNewHotkeySave") {
-                            btnNewHotkeySave = ReadLine;
+                            btnNewHotkeySave = ReadValue;
                             continue;
                         }
                     }
-                    LoadedFile = LanguageFileName;
+                    LoadedFile = LanguageFile;
 
                     return true;
                 }
@@ -822,6 +789,63 @@ namespace SoloMatchmaking {
                 default:
                     return false;
             }
+        }
+
+        private string ReadHeaderValue(string Input) {
+            string ReadValue = null;
+            if (Input.Contains("//")) {
+                int CountedForwardSlashes = 0;
+                int CountedLength = 0;
+                for (int j = 0; j < Input.Length; j++) {
+                    CountedLength++;
+                    if (Input[j] == '/') {
+                        CountedForwardSlashes++;
+                        if (CountedForwardSlashes == 2) { break; }
+                        continue;
+                    }
+                }
+                CountedLength = CountedLength - 2;
+                ReadValue = Input.Substring(0, CountedLength);
+            }
+            return ReadValue.Trim(' ').Trim('[').Trim(']');
+        }
+        private string GetControlName(string Input) {
+            if (Input.Split('=').Length > 1) {
+                return Input.Split('=')[0].Trim(' ');
+            }
+            else { return null; }
+        }
+        private string GetControlValue(string Input) {
+            if (Input.Split('=').Length > 2) {
+                string OutputBuffer = null;
+
+                if (Input.Contains("//")) {
+                    int CountedForwardSlashes = 0;
+                    int CountedLength = 0;
+                    for (int i = 1; i < Input.Length; i++) {
+                        CountedLength++;
+                        if (Input[i] == '/') {
+                            CountedForwardSlashes++;
+                            if (CountedForwardSlashes == 2) { break; }
+                            else { continue; }
+                        }
+                    }
+                    CountedLength = CountedLength - 2;
+                    OutputBuffer = Input.Substring(0, CountedLength).Trim(' ');
+                }
+                for (int i = 1; i < Input.Split('=').Length; i++) {
+                    OutputBuffer += Input.Split('=')[i] + "=";
+                }
+                if (!Input.EndsWith("=")) {
+                    OutputBuffer = OutputBuffer.Trim('=');
+                }
+                else {
+                    OutputBuffer = OutputBuffer.Substring(0, OutputBuffer.Length - 1);
+                }
+                return OutputBuffer.Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\\"", "\"").Replace("\\'", "'");
+            }
+            else if (Input.Split('=').Length == 2) { return Input.Split('=')[1].Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\\"", "\"").Replace("\\'", "'"); }
+            else { return null; }
         }
         #endregion
     }

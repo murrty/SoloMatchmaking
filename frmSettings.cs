@@ -4,6 +4,7 @@ using System.Windows.Forms;
 namespace SoloMatchmaking {
     public partial class frmSettings : Form {
         SpeechSynthesizer synth = new SpeechSynthesizer();
+        FirewallRules fwRules = FirewallRules.GetInstance();
 
         public frmSettings() {
             InitializeComponent();
@@ -28,16 +29,29 @@ namespace SoloMatchmaking {
             Configuration.Default.SynthSpeed = (int)numSynthSpeed.Value;
             Configuration.Default.SynthVolume = (int)numSynthVolume.Value;
 
-            Configuration.Default.DestinyName = txtDestinyName.Text;
+            if (Configuration.Default.DestinyName != txtDestinyName.Text) {
+                fwRules.RenameDestinyRules(txtDestinyName.Text);
+                Configuration.Default.DestinyName = txtDestinyName.Text;
+            }
             Configuration.Default.DestinyPorts = txtDestinyPorts.Text;
             Configuration.Default.DestinyBlockLocalPorts = chkDestinyBlockLocal.Checked;
             Configuration.Default.DestinyBlockRemotePorts = chkDestinyBlockRemote.Checked;
             Configuration.Default.DestinySpecifyApplication = chkDestinySpecifyApplication.Checked;
             Configuration.Default.DestinyExecutable = txtDestinyExecutable.Text;
 
-            Configuration.Default.RockstarName = txtRockstarName.Text;
+            if (Configuration.Default.DestinyName != txtDestinyName.Text) {
+                if (fwRules.RockstarGamesRulesActivated) {
+                    fwRules.DeleteRockstarRules();
+                }
+                Configuration.Default.RockstarName = txtRockstarName.Text;
+                if (fwRules.RockstarGamesRulesActivated) {
+                    fwRules.CreateRockstarRule(-1, "1.1.1.1-255.255.255.255");
+                }
+            }
             Configuration.Default.RockstarPorts = txtRockstarPorts.Text;
             Configuration.Default.Save();
+            fwRules.UpdateDestinyRules();
+            fwRules.UpdateRockstarRules();
         }
 
         private void btnSave_Click(object sender, System.EventArgs e) {

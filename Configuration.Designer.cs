@@ -25,7 +25,7 @@ namespace SoloMatchmaking {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("27000-27200,3097")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3097,27000-27200")]
         public string DestinyPorts {
             get {
                 return ((string)(this["DestinyPorts"]));
@@ -37,14 +37,13 @@ namespace SoloMatchmaking {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Destiny2SoloMMBlockOutTCP,Destiny2SoloMMBlockOutUDP,Destiny2SoloMMBlockInTCP,Dest" +
-            "iny2SoloMMBlockInUDP")]
-        public string DestinyNames {
+        [global::System.Configuration.DefaultSettingValueAttribute("Destiny2Solo")]
+        public string DestinyName {
             get {
-                return ((string)(this["DestinyNames"]));
+                return ((string)(this["DestinyName"]));
             }
             set {
-                this["DestinyNames"] = value;
+                this["DestinyName"] = value;
             }
         }
         
@@ -62,13 +61,13 @@ namespace SoloMatchmaking {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("RockstarSoloMMBlockOutUDP,RockstarSoloMMBlockInUDP")]
-        public string RockstarNames {
+        [global::System.Configuration.DefaultSettingValueAttribute("RockstarSolo")]
+        public string RockstarName {
             get {
-                return ((string)(this["RockstarNames"]));
+                return ((string)(this["RockstarName"]));
             }
             set {
-                this["RockstarNames"] = value;
+                this["RockstarName"] = value;
             }
         }
         
@@ -93,30 +92,6 @@ namespace SoloMatchmaking {
             }
             set {
                 this["EnableRockstarHotkeys"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-99999999")]
-        public int LastPosX {
-            get {
-                return ((int)(this["LastPosX"]));
-            }
-            set {
-                this["LastPosX"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-99999999")]
-        public int LastPosY {
-            get {
-                return ((int)(this["LastPosY"]));
-            }
-            set {
-                this["LastPosY"] = value;
             }
         }
         
@@ -182,18 +157,6 @@ namespace SoloMatchmaking {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string Destiny2Program {
-            get {
-                return ((string)(this["Destiny2Program"]));
-            }
-            set {
-                this["Destiny2Program"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("1935,3097,3478-3480")]
         public string OldDestinyPorts {
             get {
@@ -201,6 +164,90 @@ namespace SoloMatchmaking {
             }
             set {
                 this["OldDestinyPorts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-99999999, -99999999")]
+        public global::System.Drawing.Point LastPos {
+            get {
+                return ((global::System.Drawing.Point)(this["LastPos"]));
+            }
+            set {
+                this["LastPos"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public int SynthVolume {
+            get {
+                return ((int)(this["SynthVolume"]));
+            }
+            set {
+                this["SynthVolume"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-2")]
+        public int SynthSpeed {
+            get {
+                return ((int)(this["SynthSpeed"]));
+            }
+            set {
+                this["SynthSpeed"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DestinyBlockLocalPorts {
+            get {
+                return ((bool)(this["DestinyBlockLocalPorts"]));
+            }
+            set {
+                this["DestinyBlockLocalPorts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool DestinyBlockRemotePorts {
+            get {
+                return ((bool)(this["DestinyBlockRemotePorts"]));
+            }
+            set {
+                this["DestinyBlockRemotePorts"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DestinySpecifyApplication {
+            get {
+                return ((bool)(this["DestinySpecifyApplication"]));
+            }
+            set {
+                this["DestinySpecifyApplication"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DestinyExecutable {
+            get {
+                return ((string)(this["DestinyExecutable"]));
+            }
+            set {
+                this["DestinyExecutable"] = value;
             }
         }
     }
