@@ -1,32 +1,18 @@
-﻿using NetFwTypeLib;
+﻿//using NetFwTypeLib;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
+using System.Speech.Synthesis;
 using System.Windows.Forms;
 
 namespace SoloMatchmaking {
     public partial class frmMain : Form {
-        public static string destinyPorts = Configuration.Default.DestinyPorts;
-        public static string[] destinyNames = Configuration.Default.DestinyNames.Split(',');
-        public static string rockstarPorts = Configuration.Default.RockstarPorts;
-        public static string[] rockstarNames = Configuration.Default.RockstarNames.Split(',');
-        public static readonly int[] ruleProtocol = { 6, 17 }; // tcp, udp
-        // Ranges are separated by a comma
-
-        bool DestinyRulesCreated = false;   // if the rules for d2 were created
-        bool DestinyRulesActive = false;    // if the rules for d2 are active
+        SpeechSynthesizer synth = new SpeechSynthesizer(); // voice synth for hotkeys
+                
         bool DestinyHotkeyActive = false;   // if the hotkey for d2 is active
-
-        bool RockstarRulesCreated = false;  // if the rules for r* were created
-        bool RockstarRulesActive = false;   // if the rules for r* are active
         bool RockstarHotkeyActive = false;  // if the hotkey for r* is active
 
         bool isAdmin = false;               // if running elevated
@@ -37,17 +23,18 @@ namespace SoloMatchmaking {
         KeyboardHook destinyHook;
         KeyboardHook rockstarHook;
         Language lang = Language.GetLanguageInstance();
+        FirewallRules fwRules = FirewallRules.GetInstance();
 
         [DllImport("user32.dll")]
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
         void destinyHook_KeyPressed(object sender, KeyPressedEventArgs e) {
             if (chkEnableDestinyHotkey.Checked) {
-                toggleRule(1);
+                toggleRule(1, true);
             }
         }
         void rockstarHook_KeyPressed(object sender, KeyPressedEventArgs e) {
             if (chkEnableRockstarHotkey.Checked) {
-                toggleRule(2);
+                toggleRule(2, true);
             }
         }
 
@@ -68,17 +55,9 @@ namespace SoloMatchmaking {
             base.WndProc(ref m);
         }
         private void frmMain_Load(object sender, EventArgs e) {
-            if (Configuration.Default.LastPosX != -99999999 & Configuration.Default.LastPosY != -99999999) {
-                this.Location = new Point(Configuration.Default.LastPosX, Configuration.Default.LastPosY);
+            if (Configuration.Default.LastPos.X != -99999999 && Configuration.Default.LastPos.Y != -99999999) {
+                this.Location = Configuration.Default.LastPos;
             }
-
-            bool Debug = false;
-            for (int i = 0; i < Environment.GetCommandLineArgs().Length; i++) {
-                if (Environment.GetCommandLineArgs()[i] == "-debug")
-                    Debug = true;
-            }
-            if (!Debug)
-                tabMain.TabPages.RemoveAt(2);
         }
         private void frmMain_LocationChanged(object sender, EventArgs e) {
             if (!skipOneChange) {
@@ -105,8 +84,7 @@ namespace SoloMatchmaking {
                 save = true;
             }
             if (locationChanged) {
-                Configuration.Default.LastPosX = this.Location.X;
-                Configuration.Default.LastPosY = this.Location.Y;
+                Configuration.Default.LastPos = new Point(this.Location.X, this.Location.Y);
                 save = true;
             }
 
@@ -223,18 +201,18 @@ namespace SoloMatchmaking {
             tabMain.TabPages[0].Text = lang.tabDestiny;
             tabMain.TabPages[1].Text = lang.tabRockstar;
             if (tabMain.TabPages.Count > 2) {
-                tabMain.TabPages[2].Text = lang.tabDebug;
+                tabMain.TabPages[3].Text = lang.tabDebug;
             }
             lbCurrentLanguageShort.Text = lang.CurrentLanguageShort;
             ttMain.SetToolTip(this.lbCurrentLanguageShort, lang.CurrentLanguageLong + " (" + lang.CurrentLanguageShort + ")\n" + lang.CurrentLanguageHint);
             tsmiSelectLanguage.Text = lang.tsmiSelectLanguage;
-            if (DestinyRulesActive) {
+            if (fwRules.Destiny2RulesActivated) {
                 lbDestiny.Text = lang.lbDestinyOn;
             }
             else {
                 lbDestiny.Text = lang.lbDestinyOff;
             }
-            if (RockstarRulesActive) {
+            if (fwRules.RockstarGamesRulesActivated) {
                 lbRockstar.Text = lang.lbRockstarOn;
             }
             else {
@@ -293,16 +271,45 @@ namespace SoloMatchmaking {
             lbIsAdmin.Text = "isAdmin = " + isAdmin.ToString();
         }
         void loadSettings() {
-            loadConfiguration();
+            fwRules.Destiny2Ports = Configuration.Default.DestinyPorts;
+            fwRules.Destiny2RulesName = Configuration.Default.DestinyName;
+            fwRules.RockstarGamesPorts = Configuration.Default.RockstarPorts;
+            fwRules.RockstarGamesRulesName = Configuration.Default.RockstarName;
 
             chkEnableDestinyHotkey.Checked = Configuration.Default.EnableDestinyHotkeys;
             chkEnableRockstarHotkey.Checked = Configuration.Default.EnableRockstarHotkeys;
-        }
-        void loadConfiguration() {
-            destinyPorts = Configuration.Default.DestinyPorts;
-            destinyNames = Configuration.Default.DestinyNames.Split(',');
-            rockstarPorts = Configuration.Default.RockstarPorts;
-            rockstarNames = Configuration.Default.RockstarNames.Split(',');
+
+            // synth information
+            synth.Volume = Configuration.Default.SynthVolume;
+            synth.Rate = Configuration.Default.SynthSpeed;
+
+            // debug information
+            string DebugBuffer = "Configuration.settings";
+            DebugBuffer += "\nSynthVolume = " + Configuration.Default.SynthVolume;
+            DebugBuffer += "\nSynthSpeed = " + Configuration.Default.SynthSpeed;
+            DebugBuffer += "\nLastPos = " + Configuration.Default.LastPos;
+
+            DebugBuffer += "\n";
+
+            DebugBuffer += "\nDestinyPorts = " + Configuration.Default.DestinyPorts;
+            DebugBuffer += "\nDestinyName = " + Configuration.Default.DestinyName;
+            DebugBuffer += "\nDestinyLocalPorts = " + Configuration.Default.DestinyBlockLocalPorts;
+            DebugBuffer += "\nDestinyRemotePorts = " + Configuration.Default.DestinyBlockRemotePorts;
+            DebugBuffer += "\nDestinySpecifyApplicatin = " + Configuration.Default.DestinySpecifyApplication;
+            DebugBuffer += "\nDestinyExecutable = " + Configuration.Default.DestinyExecutable;
+            DebugBuffer += "\nEnableDestinyHotkeys = " + Configuration.Default.EnableDestinyHotkeys;
+            DebugBuffer += "\nDestinyHotkeyKey = " + Configuration.Default.DestinyHotkeyKey;
+            DebugBuffer += "\nDestinyHotkeyModifier = " + Configuration.Default.DestinyHotkeyModifier;
+
+            DebugBuffer += "\n";
+
+            DebugBuffer += "\nRockstarPorts = " + Configuration.Default.RockstarPorts;
+            DebugBuffer += "\nRockstarName = " + Configuration.Default.RockstarName;
+            DebugBuffer += "\nEnableRockstarHotkeys = " + Configuration.Default.EnableRockstarHotkeys;
+            DebugBuffer += "\nRockstarHotkeyKey = " + Configuration.Default.RockstarHotkeyKey;
+            DebugBuffer += "\nRockstarHotkeyModifier = " + Configuration.Default.RockstarHotkeyModifier;
+
+            rtbConfig.Text = DebugBuffer;
         }
 
         void throwError() {
@@ -432,213 +439,105 @@ namespace SoloMatchmaking {
 
         void checkRules() {
             try {
-                Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
-                INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
 
-                bool DestinyRuleExists = false;
-                bool RockstarRuleExists = false;
+                fwRules.CheckRules();
 
-                foreach (INetFwRule FoundRule in fwPolicy.Rules) {
-                    for (int i = 0; i < destinyNames.Length; i++) {
-                        if (FoundRule.Name.IndexOf(destinyNames[i]) != -1) {
-                            DestinyRuleExists = true;
-                            //DestinyRuleActive = FoundRule.Enabled; // TODO: Fix duplicate rules problem
-                            break;
-                        }
-                    }
-                    for (int i = 0; i < rockstarNames.Length; i++) {
-                        if (FoundRule.Name.IndexOf(rockstarNames[i]) != -1) {
-                            RockstarRuleExists = true;
-                            //RockstarRuleActive = FoundRule.Enabled; // TODO: Fix duplicate rules problem
-                            break;
-                        }
-                    }
-                }
-
-                if (DestinyRuleExists) {
-                    DestinyRulesActive = DestinyRuleExists;
-                    DestinyRulesCreated = DestinyRuleExists;
-                    lbDestiny.Text = lang.lbDestinyOn;
-                    btnToggleDestiny.Text = lang.btnToggleDestinyOn;
+                if (
+                fwRules.Destiny2OutTCPEnabled ||
+                fwRules.Destiny2OutUDPEnabled ||
+                fwRules.Destiny2InTCPEnabled ||
+                fwRules.Destiny2InUDPEnabled
+                    ) {
+                      fwRules.Destiny2RulesActivated = true;
+                      lbDestiny.Text = lang.lbDestinyOn;
+                      btnToggleDestiny.Text = lang.btnToggleDestinyOn;
                 }
                 else {
-                    DestinyRulesActive = DestinyRuleExists;
-                    DestinyRulesCreated = DestinyRuleExists;
                     lbDestiny.Text = lang.lbDestinyOff;
                     btnToggleDestiny.Text = lang.btnToggleDestinyOff;
                 }
-                if (RockstarRuleExists) {
-                    RockstarRulesActive = RockstarRuleExists;
-                    RockstarRulesCreated = RockstarRuleExists;
+
+                if (
+                fwRules.RockstarGamesOutUDPEnabled ||
+                fwRules.RockstarGamesInUDPEnabled
+                    ) {
+                    fwRules.RockstarGamesRulesActivated = true;
                     lbRockstar.Text = lang.lbRockstarOn;
                     btnToggleRockstar.Text = lang.btnToggleRockstarOn;
                 }
                 else {
-                    RockstarRulesActive = RockstarRuleExists;
-                    RockstarRulesCreated = RockstarRuleExists;
                     lbRockstar.Text = lang.lbRockstarOff;
                     btnToggleRockstar.Text = lang.btnToggleRockstarOff;
                 }
 
-                lbDestinyRulesActive.Text = "DestinyRulesActive = " + DestinyRulesActive.ToString();
-                lbRockstarRulesActive.Text = "RockstarRulesActive = " + RockstarRulesActive.ToString();
-
+                lbDestinyRulesActive.Text = "DestinyRulesActive = " + fwRules.Destiny2RulesActivated;
+                lbRockstarRulesActive.Text = "RockstarRulesActive = " + fwRules.RockstarGamesRulesActivated;
             }
             catch (Exception ex) {
                 reportError(ex);
             }
         }
-        void toggleRule(int Game) {
+        void toggleRule(int Game, bool Hotkey = false) {
             if (!isAdmin) {
                 return;
             }
             try {
                 switch (Game) {
                     case 1:
-                        if (!DestinyRulesActive) {
-                            if (CreateDestinyRules()) {
-                                lbDestiny.Text = lang.lbDestinyOn;
-                                btnToggleDestiny.Text = lang.btnToggleDestinyOn;
-                                System.Media.SystemSounds.Exclamation.Play();
+                        if (fwRules.Destiny2RulesActivated) {
+                            if (fwRules.ToggleDestinyRules(false)) {
+                                lbDestiny.Text = lang.lbDestinyOff;
+                                btnToggleDestiny.Text = lang.btnToggleDestinyOff;
+                                fwRules.Destiny2RulesActivated = false;
+                                if (Hotkey) { synth.Speak("Destiny 2 rules de-activated."); }
                             }
                         }
                         else {
-                            if (DeleteDestinyRules()) {
-                                lbDestiny.Text = lang.lbDestinyOff;
-                                btnToggleDestiny.Text = lang.btnToggleDestinyOff;
-                                System.Media.SystemSounds.Asterisk.Play();
+                            if (fwRules.ToggleDestinyRules(true)) {
+                                lbDestiny.Text = lang.lbDestinyOn;
+                                btnToggleDestiny.Text = lang.btnToggleDestinyOn;
+                                fwRules.Destiny2RulesActivated = true;
+                                if (Hotkey) { synth.Speak("Destiny 2 rules activated."); }
                             }
                         }
                         break;
+
                     case 2:
-                        if (!RockstarRulesActive) {
-                            if (CreateRockstarRules()) {
-                                lbRockstar.Text = lang.lbRockstarOn;
-                                btnToggleRockstar.Text = lang.btnToggleRockstarOn;
-                                System.Media.SystemSounds.Exclamation.Play();
+                        if (fwRules.RockstarGamesRulesActivated) {
+                            if (fwRules.ToggleRockstarRules(false)) {
+                                lbRockstar.Text = lang.lbRockstarOff;
+                                btnToggleRockstar.Text = lang.btnToggleRockstarOff;
+                                fwRules.RockstarGamesRulesActivated = false;
+                                if (Hotkey) { synth.Speak("Rock Star Games rules de-activated."); }
                             }
                         }
                         else {
-                            if (DeleteRockstarRules()) {
-                                lbRockstar.Text = lang.lbRockstarOff;
-                                btnToggleRockstar.Text = lang.btnToggleRockstarOff;
-                                lbRockstar.Text = lang.lbRockstarOff;
-                                btnToggleRockstar.Text = lang.btnToggleRockstarOff;
-                                System.Media.SystemSounds.Asterisk.Play();
+                            if (fwRules.ToggleRockstarRules(true)) {
+                                lbRockstar.Text = lang.lbRockstarOn;
+                                btnToggleRockstar.Text = lang.btnToggleRockstarOn;
+                                fwRules.RockstarGamesRulesActivated = true;
+                                if (Hotkey) { synth.Speak("Rock Star Games rules activated."); }
                             }
                         }
                         break;
                     default: return;
                 }
 
-                lbDestinyRulesActive.Text = "DestinyRulesActive = " + DestinyRulesActive.ToString();
-                lbRockstarRulesActive.Text = "RockstarRulesActive = " + RockstarRulesActive.ToString();
+                lbDestinyRulesActive.Text = "DestinyRulesActive = " + fwRules.Destiny2RulesActivated;
+                lbRockstarRulesActive.Text = "RockstarRulesActive = " + fwRules.RockstarGamesRulesActivated;
             }
             catch (Exception ex) {
                 reportError(ex);
             }
             
         }
-        bool deleteRules(int Game) {
-            try {
-                bool deleted = false;
-                if (DestinyRulesCreated) { if (DeleteDestinyRules()) { deleted = true; } }
-                if (RockstarRulesCreated) { if (DeleteRockstarRules()) { deleted = true; } }
-
-                return deleted;
-            }
-            catch (Exception ex) {
-                reportError(ex);
-                return false;
-            }
-        }
 
         bool CreateDestinyRules() {
-            if (Program.IsDebugging) {
-                if (string.IsNullOrEmpty(Configuration.Default.Destiny2Program) || !File.Exists(Configuration.Default.Destiny2Program)) {
-                    MessageBox.Show("Destiny 2 application was not specified, please specify it.");
-                    using (OpenFileDialog ofd = new OpenFileDialog()) {
-                        ofd.Title = "Open destiny2.exe";
-                        ofd.Filter = "Destiny 2 (destiny2.exe)|destiny2.exe";
-                        if (ofd.ShowDialog() == DialogResult.OK) {
-                            Configuration.Default.Destiny2Program = ofd.FileName;
-                            Configuration.Default.Save();
-                        }
-                        else {
-                            return false;
-                        }
-                    }
-                }
-            }
-
             try {
-                INetFwRule2 outTCP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
-                outTCP.Name = destinyNames[0];
-                //outTCP.ApplicationName = Configuration.Default.Destiny2Program;
-                outTCP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
-                outTCP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
-                outTCP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
-                outTCP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
-                outTCP.Protocol = ruleProtocol[0];
-                outTCP.RemotePorts = destinyPorts;
-                outTCP.InterfaceTypes = "All";
-                outTCP.Enabled = true;
-                Console.WriteLine("Destiny 2 outTCP created");
-
-                INetFwRule2 outUDP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
-                outUDP.Name = destinyNames[1];
-                //outUDP.ApplicationName = Configuration.Default.Destiny2Program;
-                outUDP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
-                outUDP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
-                outUDP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
-                outUDP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
-                outUDP.Protocol = ruleProtocol[1];
-                outUDP.RemotePorts = destinyPorts;
-                outUDP.InterfaceTypes = "All";
-                outUDP.Enabled = true;
-                Console.WriteLine("Destiny 2 outUDP created");
-
-                INetFwRule2 inTCP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
-                inTCP.Name = destinyNames[2];
-                //inTCP.ApplicationName = Configuration.Default.Destiny2Program;
-                inTCP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
-                inTCP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
-                inTCP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
-                inTCP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
-                inTCP.Protocol = ruleProtocol[0];
-                inTCP.RemotePorts = destinyPorts;
-                inTCP.InterfaceTypes = "All";
-                inTCP.Enabled = true;
-                Console.WriteLine("Destiny 2 inTCP created");
-
-                INetFwRule2 inUDP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
-                inUDP.Name = destinyNames[3];
-                //inUDP.ApplicationName = Configuration.Default.Destiny2Program;
-                inUDP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
-                inUDP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
-                inUDP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
-                inUDP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
-                inUDP.Protocol = ruleProtocol[1];
-                inUDP.RemotePorts = destinyPorts;
-                inUDP.InterfaceTypes = "All";
-                inUDP.Enabled = true;
-                Console.WriteLine("Destiny 2 inUDP created");
-
-                Console.WriteLine("called firewallPolicy");
-                INetFwPolicy2 firewallPolicy = (INetFwPolicy2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FwPolicy2"));
-                firewallPolicy.Rules.Add(outTCP);
-                Console.WriteLine("Destiny 2 added outTCP to the firewall");
-                firewallPolicy.Rules.Add(outUDP);
-                Console.WriteLine("Destiny 2 added outUDP to the firewall");
-                firewallPolicy.Rules.Add(inTCP);
-                Console.WriteLine("Destiny 2 added inTCP to the firewall");
-                firewallPolicy.Rules.Add(inUDP);
-                Console.WriteLine("Destiny 2 added inUDP to the firewall");
-
-                DestinyRulesCreated = true;
-                DestinyRulesActive = true;
-
-                return true;
+                if (fwRules.CreateDestinyRule(-1))
+                    return true;
+                else
+                    return false;
             }
             catch (Exception ex) {
                 reportError(ex);
@@ -647,24 +546,10 @@ namespace SoloMatchmaking {
         }
         bool DeleteDestinyRules() {
             try {
-                Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
-                INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
-
-                fwPolicy.Rules.Remove(destinyNames[0]);
-                Console.WriteLine("Destiny 2 outTCP has been removed");
-                fwPolicy.Rules.Remove(destinyNames[1]);
-                Console.WriteLine("Destiny 2 outUDP has been removed");
-                fwPolicy.Rules.Remove(destinyNames[2]);
-                Console.WriteLine("Destiny 2 inTCP has been removed");
-                fwPolicy.Rules.Remove(destinyNames[3]);
-                Console.WriteLine("Destiny 2 inUDP has been removed");
-
-                DestinyRulesCreated = false;
-                DestinyRulesActive = false;
-
-                lbDestinyRulesActive.Text = "DestinyRulesActive = " + DestinyRulesActive.ToString();
-
-                return true;
+                if (fwRules.DeleteDestinyRules())
+                    return true;
+                else
+                    return false;
             }
             catch (Exception ex) {
                 reportError(ex);
@@ -674,48 +559,10 @@ namespace SoloMatchmaking {
 
         bool CreateRockstarRules() {
             try {
-                INetFwRule2 outUDP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
-                outUDP.Name = rockstarNames[0];
-                outUDP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
-                outUDP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
-                outUDP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
-                outUDP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_OUT;
-                outUDP.Protocol = ruleProtocol[1];
-                outUDP.LocalPorts = rockstarPorts;
-                if (lbRockstarRanges.Items.Count > 0) {
-                    outUDP.RemoteAddresses = getRockstarRange(lbRockstarRanges);
-                }
-                outUDP.InterfaceTypes = "All";
-                outUDP.Enabled = true;
-                Console.WriteLine("Rockstar outUDP created");
-
-                INetFwRule2 inUDP = (INetFwRule2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FWRule"));
-                inUDP.Name = rockstarNames[1];
-                inUDP.Description = "Blocks certain ports from connecting to block anyone from matchmaking in Destiny 2";
-                inUDP.Profiles = (int)NET_FW_PROFILE_TYPE2_.NET_FW_PROFILE2_ALL;
-                inUDP.Action = NET_FW_ACTION_.NET_FW_ACTION_BLOCK;
-                inUDP.Direction = NET_FW_RULE_DIRECTION_.NET_FW_RULE_DIR_IN;
-                inUDP.Protocol = ruleProtocol[1];
-                inUDP.LocalPorts = rockstarPorts;
-                if (lbRockstarRanges.Items.Count > 0) {
-                    outUDP.RemoteAddresses = getRockstarRange(lbRockstarRanges);
-                }
-                inUDP.InterfaceTypes = "All";
-                inUDP.Enabled = true;
-                Console.WriteLine("Rockstar inUDP created");
-
-
-                Console.WriteLine("called firewallPolicy");
-                INetFwPolicy2 firewallPolicy = (INetFwPolicy2)Activator.CreateInstance(Type.GetTypeFromProgID("HNetCfg.FwPolicy2"));
-                firewallPolicy.Rules.Add(outUDP);
-                Console.WriteLine("Rockstar added outUDP to the firewall");
-                firewallPolicy.Rules.Add(inUDP);
-                Console.WriteLine("Rockstar added outUDP to the firewall");
-
-                RockstarRulesCreated = true;
-                RockstarRulesActive = true;
-
-                return true;
+                if (fwRules.CreateRockstarRule(-1))
+                    return true;
+                else
+                    return false;
             }
             catch (Exception ex) {
                 reportError(ex);
@@ -724,20 +571,10 @@ namespace SoloMatchmaking {
         }
         bool DeleteRockstarRules() {
             try {
-                Type firewallType = Type.GetTypeFromProgID("HNetCfg.FwPolicy2");
-                INetFwPolicy2 fwPolicy = (INetFwPolicy2)Activator.CreateInstance(firewallType);
-
-                fwPolicy.Rules.Remove(rockstarNames[0]);
-                Console.WriteLine("Rockstar outTCP has been removed");
-                fwPolicy.Rules.Remove(rockstarNames[1]);
-                Console.WriteLine("Rockstar inTCP has been removed");
-
-                RockstarRulesCreated = false;
-                RockstarRulesActive = false;
-
-                lbRockstarRulesActive.Text = "RockstarRulesActive = " + RockstarRulesActive.ToString();
-
-                return true;
+                if (fwRules.DeleteRockstarRules())
+                    return true;
+                else
+                    return false;
             }
             catch (Exception ex) {
                 reportError(ex);
@@ -822,6 +659,16 @@ namespace SoloMatchmaking {
                 Configuration.Default.Save();
             }
             cmsLanguageSelect.Hide();
+        }
+
+        private void mSettings_Click(object sender, EventArgs e) {
+            frmSettings settings = new frmSettings();
+            settings.ShowDialog();
+            settings.Dispose();
+            loadSettings();
+        }
+        private void mGithub_Click(object sender, EventArgs e) {
+            System.Diagnostics.Process.Start("https://github.com/murrty/SoloMatchmaking");
         }
     }
 }

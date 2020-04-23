@@ -38,6 +38,8 @@
             this.lbRockstarHotkey = new System.Windows.Forms.Label();
             this.btnToggleRockstar = new System.Windows.Forms.Button();
             this.rtbRockstarInfo = new System.Windows.Forms.RichTextBox();
+            this.tabConfiguration = new System.Windows.Forms.TabPage();
+            this.rtbConfig = new System.Windows.Forms.RichTextBox();
             this.tabDebug = new System.Windows.Forms.TabPage();
             this.btnThrowError = new System.Windows.Forms.Button();
             this.lbIsAdmin = new System.Windows.Forms.Label();
@@ -52,9 +54,14 @@
             this.cmsLanguageSelect = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiSelectLanguage = new System.Windows.Forms.ToolStripMenuItem();
             this.tscbLanguages = new System.Windows.Forms.ToolStripComboBox();
+            this.statusBar1 = new System.Windows.Forms.StatusBar();
+            this.mainMenu1 = new System.Windows.Forms.MainMenu(this.components);
+            this.mSettings = new System.Windows.Forms.MenuItem();
+            this.mGithub = new System.Windows.Forms.MenuItem();
             this.tabMain.SuspendLayout();
             this.tabDestiny.SuspendLayout();
             this.tabRockstar.SuspendLayout();
+            this.tabConfiguration.SuspendLayout();
             this.tabDebug.SuspendLayout();
             this.cmsLanguageSelect.SuspendLayout();
             this.SuspendLayout();
@@ -63,12 +70,13 @@
             // 
             this.tabMain.Controls.Add(this.tabDestiny);
             this.tabMain.Controls.Add(this.tabRockstar);
+            this.tabMain.Controls.Add(this.tabConfiguration);
             this.tabMain.Controls.Add(this.tabDebug);
             this.tabMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabMain.Location = new System.Drawing.Point(0, 0);
             this.tabMain.Name = "tabMain";
             this.tabMain.SelectedIndex = 0;
-            this.tabMain.Size = new System.Drawing.Size(432, 270);
+            this.tabMain.Size = new System.Drawing.Size(432, 273);
             this.tabMain.TabIndex = 0;
             // 
             // tabDestiny
@@ -79,7 +87,7 @@
             this.tabDestiny.Location = new System.Drawing.Point(4, 22);
             this.tabDestiny.Name = "tabDestiny";
             this.tabDestiny.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDestiny.Size = new System.Drawing.Size(424, 244);
+            this.tabDestiny.Size = new System.Drawing.Size(424, 247);
             this.tabDestiny.TabIndex = 0;
             this.tabDestiny.Text = "tabDestiny";
             this.tabDestiny.UseVisualStyleBackColor = true;
@@ -138,7 +146,7 @@
             this.tabRockstar.Location = new System.Drawing.Point(4, 22);
             this.tabRockstar.Name = "tabRockstar";
             this.tabRockstar.Padding = new System.Windows.Forms.Padding(3);
-            this.tabRockstar.Size = new System.Drawing.Size(424, 244);
+            this.tabRockstar.Size = new System.Drawing.Size(424, 247);
             this.tabRockstar.TabIndex = 1;
             this.tabRockstar.Text = "tabRockstar";
             this.tabRockstar.UseVisualStyleBackColor = true;
@@ -226,9 +234,30 @@
             this.rtbRockstarInfo.Location = new System.Drawing.Point(258, 6);
             this.rtbRockstarInfo.Name = "rtbRockstarInfo";
             this.rtbRockstarInfo.ReadOnly = true;
-            this.rtbRockstarInfo.Size = new System.Drawing.Size(160, 232);
+            this.rtbRockstarInfo.Size = new System.Drawing.Size(160, 236);
             this.rtbRockstarInfo.TabIndex = 0;
             this.rtbRockstarInfo.Text = "rtbRockstarInfo";
+            // 
+            // tabConfiguration
+            // 
+            this.tabConfiguration.Controls.Add(this.rtbConfig);
+            this.tabConfiguration.Location = new System.Drawing.Point(4, 22);
+            this.tabConfiguration.Name = "tabConfiguration";
+            this.tabConfiguration.Padding = new System.Windows.Forms.Padding(3);
+            this.tabConfiguration.Size = new System.Drawing.Size(424, 247);
+            this.tabConfiguration.TabIndex = 3;
+            this.tabConfiguration.Text = "Configuration";
+            this.tabConfiguration.UseVisualStyleBackColor = true;
+            // 
+            // rtbConfig
+            // 
+            this.rtbConfig.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtbConfig.Location = new System.Drawing.Point(6, 6);
+            this.rtbConfig.Name = "rtbConfig";
+            this.rtbConfig.ReadOnly = true;
+            this.rtbConfig.Size = new System.Drawing.Size(412, 235);
+            this.rtbConfig.TabIndex = 0;
+            this.rtbConfig.Text = "";
             // 
             // tabDebug
             // 
@@ -241,7 +270,7 @@
             this.tabDebug.Location = new System.Drawing.Point(4, 22);
             this.tabDebug.Name = "tabDebug";
             this.tabDebug.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDebug.Size = new System.Drawing.Size(424, 244);
+            this.tabDebug.Size = new System.Drawing.Size(424, 247);
             this.tabDebug.TabIndex = 2;
             this.tabDebug.Text = "tabDebug";
             this.tabDebug.UseVisualStyleBackColor = true;
@@ -304,8 +333,9 @@
             // lbDestiny
             // 
             this.lbDestiny.Cursor = System.Windows.Forms.Cursors.Default;
+            this.lbDestiny.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbDestiny.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.lbDestiny.Location = new System.Drawing.Point(217, 4);
+            this.lbDestiny.Location = new System.Drawing.Point(222, 279);
             this.lbDestiny.Name = "lbDestiny";
             this.lbDestiny.Size = new System.Drawing.Size(100, 13);
             this.lbDestiny.TabIndex = 1;
@@ -314,7 +344,7 @@
             // 
             // lbRockstar
             // 
-            this.lbRockstar.Location = new System.Drawing.Point(321, 4);
+            this.lbRockstar.Location = new System.Drawing.Point(326, 279);
             this.lbRockstar.Name = "lbRockstar";
             this.lbRockstar.Size = new System.Drawing.Size(100, 13);
             this.lbRockstar.TabIndex = 2;
@@ -330,7 +360,7 @@
             this.lbCurrentLanguageShort.AutoSize = true;
             this.lbCurrentLanguageShort.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lbCurrentLanguageShort.Font = new System.Drawing.Font("Segoe UI", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbCurrentLanguageShort.Location = new System.Drawing.Point(5, 250);
+            this.lbCurrentLanguageShort.Location = new System.Drawing.Point(1, 279);
             this.lbCurrentLanguageShort.Name = "lbCurrentLanguageShort";
             this.lbCurrentLanguageShort.Size = new System.Drawing.Size(135, 13);
             this.lbCurrentLanguageShort.TabIndex = 3;
@@ -361,17 +391,45 @@
             this.tscbLanguages.Size = new System.Drawing.Size(121, 21);
             this.tscbLanguages.SelectedIndexChanged += new System.EventHandler(this.tscbLanguages_SelectedIndexChanged);
             // 
+            // statusBar1
+            // 
+            this.statusBar1.Location = new System.Drawing.Point(0, 273);
+            this.statusBar1.Name = "statusBar1";
+            this.statusBar1.Size = new System.Drawing.Size(432, 22);
+            this.statusBar1.SizingGrip = false;
+            this.statusBar1.TabIndex = 4;
+            // 
+            // mainMenu1
+            // 
+            this.mainMenu1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mSettings,
+            this.mGithub});
+            // 
+            // mSettings
+            // 
+            this.mSettings.Index = 0;
+            this.mSettings.Text = "Settings";
+            this.mSettings.Click += new System.EventHandler(this.mSettings_Click);
+            // 
+            // mGithub
+            // 
+            this.mGithub.Index = 1;
+            this.mGithub.Text = "Github";
+            this.mGithub.Click += new System.EventHandler(this.mGithub_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(432, 270);
+            this.ClientSize = new System.Drawing.Size(432, 295);
             this.Controls.Add(this.lbCurrentLanguageShort);
             this.Controls.Add(this.lbRockstar);
             this.Controls.Add(this.lbDestiny);
             this.Controls.Add(this.tabMain);
+            this.Controls.Add(this.statusBar1);
             this.MaximizeBox = false;
+            this.Menu = this.mainMenu1;
             this.Name = "frmMain";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "frmMain";
@@ -382,6 +440,7 @@
             this.tabDestiny.ResumeLayout(false);
             this.tabRockstar.ResumeLayout(false);
             this.tabRockstar.PerformLayout();
+            this.tabConfiguration.ResumeLayout(false);
             this.tabDebug.ResumeLayout(false);
             this.tabDebug.PerformLayout();
             this.cmsLanguageSelect.ResumeLayout(false);
@@ -420,6 +479,12 @@
         private System.Windows.Forms.ContextMenuStrip cmsLanguageSelect;
         private System.Windows.Forms.ToolStripComboBox tscbLanguages;
         private System.Windows.Forms.ToolStripMenuItem tsmiSelectLanguage;
+        private System.Windows.Forms.StatusBar statusBar1;
+        private System.Windows.Forms.MainMenu mainMenu1;
+        private System.Windows.Forms.MenuItem mSettings;
+        private System.Windows.Forms.MenuItem mGithub;
+        private System.Windows.Forms.TabPage tabConfiguration;
+        private System.Windows.Forms.RichTextBox rtbConfig;
     }
 }
 
