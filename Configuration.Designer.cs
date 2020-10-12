@@ -250,5 +250,29 @@ namespace SoloMatchmaking {
                 this["DestinyExecutable"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseSynth {
+            get {
+                return ((bool)(this["UseSynth"]));
+            }
+            set {
+                this["UseSynth"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowNotification {
+            get {
+                return ((bool)(this["ShowNotification"]));
+            }
+            set {
+                this["ShowNotification"] = value;
+            }
+        }
     }
 }

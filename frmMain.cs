@@ -22,6 +22,7 @@ namespace SoloMatchmaking {
 
         KeyboardHook destinyHook;
         KeyboardHook rockstarHook;
+        Notification nForm = new Notification();
         Language lang = Language.GetLanguageInstance();
         FirewallRules fwRules = FirewallRules.GetInstance();
 
@@ -489,7 +490,21 @@ namespace SoloMatchmaking {
                                 lbDestiny.Text = lang.lbDestinyOff;
                                 btnToggleDestiny.Text = lang.btnToggleDestinyOff;
                                 fwRules.Destiny2RulesActivated = false;
-                                if (Hotkey) { synth.Speak("Destiny 2 rules de-activated."); }
+                                if (Hotkey) {
+                                    if (Configuration.Default.UseSynth) {
+                                        synth.Speak("Destiny 2 rules de-activated.");
+                                    }
+                                    if (Configuration.Default.ShowNotification) {
+                                        if (!nForm.IsDisposed) {
+                                            nForm.Dispose();
+                                        }
+                                        nForm = new Notification();
+                                        nForm.RulesName = "Destiny 2";
+                                        nForm.RulesActivated = false;
+                                        nForm.NotificationIcon = Properties.Resources.D2;
+                                        nForm.Show();
+                                    }
+                                }
                             }
                         }
                         else {
@@ -497,7 +512,21 @@ namespace SoloMatchmaking {
                                 lbDestiny.Text = lang.lbDestinyOn;
                                 btnToggleDestiny.Text = lang.btnToggleDestinyOn;
                                 fwRules.Destiny2RulesActivated = true;
-                                if (Hotkey) { synth.Speak("Destiny 2 rules activated."); }
+                                if (Hotkey) {
+                                    if (Configuration.Default.UseSynth) {
+                                        synth.Speak("Destiny 2 rules activated.");
+                                    }
+                                    if (Configuration.Default.ShowNotification) {
+                                        if (!nForm.IsDisposed) {
+                                            nForm.Dispose();
+                                        }
+                                        nForm = new Notification();
+                                        nForm.RulesName = "Destiny 2";
+                                        nForm.RulesActivated = true;
+                                        nForm.NotificationIcon = Properties.Resources.D2;
+                                        nForm.Show();
+                                    }
+                                }
                             }
                         }
                         break;
@@ -508,7 +537,21 @@ namespace SoloMatchmaking {
                                 lbRockstar.Text = lang.lbRockstarOff;
                                 btnToggleRockstar.Text = lang.btnToggleRockstarOff;
                                 fwRules.RockstarGamesRulesActivated = false;
-                                if (Hotkey) { synth.Speak("Rock Star Games rules de-activated."); }
+                                if (Hotkey) {
+                                    if (Configuration.Default.UseSynth) {
+                                        synth.Speak("Rock Star Games rules de-activated.");
+                                    }
+                                    if (Configuration.Default.ShowNotification) {
+                                        if (!nForm.IsDisposed) {
+                                            nForm.Dispose();
+                                        }
+                                        nForm = new Notification();
+                                        nForm.RulesName = "Rockstar Games";
+                                        nForm.RulesActivated = false;
+                                        nForm.NotificationIcon = Properties.Resources.RS;
+                                        nForm.Show();
+                                    }
+                                }
                             }
                         }
                         else {
@@ -516,7 +559,21 @@ namespace SoloMatchmaking {
                                 lbRockstar.Text = lang.lbRockstarOn;
                                 btnToggleRockstar.Text = lang.btnToggleRockstarOn;
                                 fwRules.RockstarGamesRulesActivated = true;
-                                if (Hotkey) { synth.Speak("Rock Star Games rules activated."); }
+                                if (Hotkey) {
+                                    if (Configuration.Default.UseSynth) {
+                                        synth.Speak("Rock Star Games rules activated.");
+                                    }
+                                    if (Configuration.Default.ShowNotification) {
+                                        if (!nForm.IsDisposed) {
+                                            nForm.Dispose();
+                                        }
+                                        nForm = new Notification();
+                                        nForm.RulesName = "Rockstar Games";
+                                        nForm.RulesActivated = true;
+                                        nForm.NotificationIcon = Properties.Resources.RS;
+                                        nForm.Show();
+                                    }
+                                }
                             }
                         }
                         break;

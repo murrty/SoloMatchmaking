@@ -26,6 +26,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.tcMain = new System.Windows.Forms.TabControl();
             this.tabGeneral = new System.Windows.Forms.TabPage();
+            this.chkUseSynth = new System.Windows.Forms.CheckBox();
             this.btnGeneralResetToDefault = new System.Windows.Forms.Button();
             this.gbSpeech = new System.Windows.Forms.GroupBox();
             this.btnTestSpeech = new System.Windows.Forms.Button();
@@ -34,6 +35,8 @@
             this.numSynthSpeed = new System.Windows.Forms.NumericUpDown();
             this.lbSpeechSynthSpeed = new System.Windows.Forms.Label();
             this.tabDestiny = new System.Windows.Forms.TabPage();
+            this.chkDestinyBlockRemote = new System.Windows.Forms.CheckBox();
+            this.chkDestinyBlockLocal = new System.Windows.Forms.CheckBox();
             this.btnDestinyResetToDefault = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.chkDestinySpecifyApplication = new System.Windows.Forms.CheckBox();
@@ -52,8 +55,7 @@
             this.lbRockstarPorts = new System.Windows.Forms.Label();
             this.txtRockstarPorts = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.chkDestinyBlockLocal = new System.Windows.Forms.CheckBox();
-            this.chkDestinyBlockRemote = new System.Windows.Forms.CheckBox();
+            this.chkNotification = new System.Windows.Forms.CheckBox();
             this.tcMain.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.gbSpeech.SuspendLayout();
@@ -87,6 +89,8 @@
             // 
             // tabGeneral
             // 
+            this.tabGeneral.Controls.Add(this.chkNotification);
+            this.tabGeneral.Controls.Add(this.chkUseSynth);
             this.tabGeneral.Controls.Add(this.btnGeneralResetToDefault);
             this.tabGeneral.Controls.Add(this.gbSpeech);
             this.tabGeneral.Location = new System.Drawing.Point(4, 22);
@@ -96,6 +100,16 @@
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             this.tabGeneral.UseVisualStyleBackColor = true;
+            // 
+            // chkUseSynth
+            // 
+            this.chkUseSynth.AutoSize = true;
+            this.chkUseSynth.Location = new System.Drawing.Point(187, 14);
+            this.chkUseSynth.Name = "chkUseSynth";
+            this.chkUseSynth.Size = new System.Drawing.Size(197, 17);
+            this.chkUseSynth.TabIndex = 17;
+            this.chkUseSynth.Text = "Use synthesizer when using hotkeys";
+            this.chkUseSynth.UseVisualStyleBackColor = true;
             // 
             // btnGeneralResetToDefault
             // 
@@ -208,6 +222,26 @@
             this.tabDestiny.Text = "Destiny 2";
             this.tabDestiny.UseVisualStyleBackColor = true;
             // 
+            // chkDestinyBlockRemote
+            // 
+            this.chkDestinyBlockRemote.AutoSize = true;
+            this.chkDestinyBlockRemote.Location = new System.Drawing.Point(258, 65);
+            this.chkDestinyBlockRemote.Name = "chkDestinyBlockRemote";
+            this.chkDestinyBlockRemote.Size = new System.Drawing.Size(114, 17);
+            this.chkDestinyBlockRemote.TabIndex = 17;
+            this.chkDestinyBlockRemote.Text = "Block remote ports";
+            this.chkDestinyBlockRemote.UseVisualStyleBackColor = true;
+            // 
+            // chkDestinyBlockLocal
+            // 
+            this.chkDestinyBlockLocal.AutoSize = true;
+            this.chkDestinyBlockLocal.Location = new System.Drawing.Point(258, 42);
+            this.chkDestinyBlockLocal.Name = "chkDestinyBlockLocal";
+            this.chkDestinyBlockLocal.Size = new System.Drawing.Size(104, 17);
+            this.chkDestinyBlockLocal.TabIndex = 16;
+            this.chkDestinyBlockLocal.Text = "Block local ports";
+            this.chkDestinyBlockLocal.UseVisualStyleBackColor = true;
+            // 
             // btnDestinyResetToDefault
             // 
             this.btnDestinyResetToDefault.Location = new System.Drawing.Point(302, 138);
@@ -232,7 +266,7 @@
             this.chkDestinySpecifyApplication.AutoSize = true;
             this.chkDestinySpecifyApplication.Location = new System.Drawing.Point(11, 86);
             this.chkDestinySpecifyApplication.Name = "chkDestinySpecifyApplication";
-            this.chkDestinySpecifyApplication.Size = new System.Drawing.Size(177, 17);
+            this.chkDestinySpecifyApplication.Size = new System.Drawing.Size(178, 17);
             this.chkDestinySpecifyApplication.TabIndex = 7;
             this.chkDestinySpecifyApplication.Text = "Specify destiny2.exe executable";
             this.chkDestinySpecifyApplication.UseVisualStyleBackColor = true;
@@ -374,25 +408,15 @@
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // chkDestinyBlockLocal
+            // chkNotification
             // 
-            this.chkDestinyBlockLocal.AutoSize = true;
-            this.chkDestinyBlockLocal.Location = new System.Drawing.Point(258, 42);
-            this.chkDestinyBlockLocal.Name = "chkDestinyBlockLocal";
-            this.chkDestinyBlockLocal.Size = new System.Drawing.Size(103, 17);
-            this.chkDestinyBlockLocal.TabIndex = 16;
-            this.chkDestinyBlockLocal.Text = "Block local ports";
-            this.chkDestinyBlockLocal.UseVisualStyleBackColor = true;
-            // 
-            // chkDestinyBlockRemote
-            // 
-            this.chkDestinyBlockRemote.AutoSize = true;
-            this.chkDestinyBlockRemote.Location = new System.Drawing.Point(258, 65);
-            this.chkDestinyBlockRemote.Name = "chkDestinyBlockRemote";
-            this.chkDestinyBlockRemote.Size = new System.Drawing.Size(113, 17);
-            this.chkDestinyBlockRemote.TabIndex = 17;
-            this.chkDestinyBlockRemote.Text = "Block remote ports";
-            this.chkDestinyBlockRemote.UseVisualStyleBackColor = true;
+            this.chkNotification.AutoSize = true;
+            this.chkNotification.Location = new System.Drawing.Point(187, 39);
+            this.chkNotification.Name = "chkNotification";
+            this.chkNotification.Size = new System.Drawing.Size(211, 17);
+            this.chkNotification.TabIndex = 18;
+            this.chkNotification.Text = "Display notification when using hotkeys";
+            this.chkNotification.UseVisualStyleBackColor = true;
             // 
             // frmSettings
             // 
@@ -410,6 +434,7 @@
             this.Text = "Settings";
             this.tcMain.ResumeLayout(false);
             this.tabGeneral.ResumeLayout(false);
+            this.tabGeneral.PerformLayout();
             this.gbSpeech.ResumeLayout(false);
             this.gbSpeech.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numSynthVolume)).EndInit();
@@ -455,5 +480,7 @@
         private System.Windows.Forms.Button btnRockstarResetToDefault;
         private System.Windows.Forms.CheckBox chkDestinyBlockRemote;
         private System.Windows.Forms.CheckBox chkDestinyBlockLocal;
+        private System.Windows.Forms.CheckBox chkUseSynth;
+        private System.Windows.Forms.CheckBox chkNotification;
     }
 }

@@ -373,13 +373,13 @@
             this.tsmiSelectLanguage,
             this.tscbLanguages});
             this.cmsLanguageSelect.Name = "cmsLanguageSelect";
-            this.cmsLanguageSelect.Size = new System.Drawing.Size(198, 51);
+            this.cmsLanguageSelect.Size = new System.Drawing.Size(205, 53);
             // 
             // tsmiSelectLanguage
             // 
             this.tsmiSelectLanguage.Enabled = false;
             this.tsmiSelectLanguage.Name = "tsmiSelectLanguage";
-            this.tsmiSelectLanguage.Size = new System.Drawing.Size(197, 22);
+            this.tsmiSelectLanguage.Size = new System.Drawing.Size(204, 22);
             this.tsmiSelectLanguage.Text = "tsmiSelectNewLanguage";
             // 
             // tscbLanguages
@@ -388,7 +388,7 @@
             this.tscbLanguages.Items.AddRange(new object[] {
             "en"});
             this.tscbLanguages.Name = "tscbLanguages";
-            this.tscbLanguages.Size = new System.Drawing.Size(121, 21);
+            this.tscbLanguages.Size = new System.Drawing.Size(121, 23);
             this.tscbLanguages.SelectedIndexChanged += new System.EventHandler(this.tscbLanguages_SelectedIndexChanged);
             // 
             // statusBar1

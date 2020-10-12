@@ -14,6 +14,8 @@ namespace SoloMatchmaking {
         private void LoadConfiguration() {
             numSynthSpeed.Value = Configuration.Default.SynthSpeed;
             numSynthVolume.Value = Configuration.Default.SynthVolume;
+            chkUseSynth.Checked = Configuration.Default.UseSynth;
+            chkNotification.Checked = Configuration.Default.ShowNotification;
 
             txtDestinyName.Text = Configuration.Default.DestinyName;
             txtDestinyPorts.Text = Configuration.Default.DestinyPorts;
@@ -28,6 +30,8 @@ namespace SoloMatchmaking {
         private void SaveConfiguration() {
             Configuration.Default.SynthSpeed = (int)numSynthSpeed.Value;
             Configuration.Default.SynthVolume = (int)numSynthVolume.Value;
+            Configuration.Default.UseSynth = chkUseSynth.Checked;
+            Configuration.Default.ShowNotification = chkNotification.Checked;
 
             if (Configuration.Default.DestinyName != txtDestinyName.Text) {
                 fwRules.RenameDestinyRules(txtDestinyName.Text);
